@@ -8,13 +8,6 @@
 
 
 /*
- *  JSON_LIBRARY must be declared if libjson is compiled as a static or dynamic
- *  library.  This exposes a C-style interface, but none of the inner workings of libjson
- */
-#define JSON_LIBRARY
-
-
-/*
  *  JSON_STRICT removes all of libjson's extensions.  Meaning no comments, no special numbers
  */
 //#define JSON_STRICT
@@ -32,18 +25,11 @@
 
 
 /*
- *  JSON_ISO_STRICT turns off all code that uses non-standard C++.  This removes all
- *  references to long long and long double as well as a few others
- */
-//#define JSON_ISO_STRICT
-
-
-/*
  *  JSON_SAFE performs similarly to JSON_DEBUG, except this option does protect
  *  from the errors that it encounters.  This option is recommended for those who
  *  feel it's possible for their program to encounter invalid json.
  */
-#define JSON_SAFE
+//#define JSON_SAFE
 
 
 /*
@@ -127,7 +113,7 @@
  *  pool.  With this option turned on, the default behavior is still done internally unless
  *  a callback is registered.  So you can have this option on and not use it.
  */
-#define JSON_MEMORY_CALLBACKS
+//#define JSON_MEMORY_CALLBACKS
 
 
 /*
@@ -135,7 +121,7 @@
  *  up memory that has been allocated by the user.  This includes strings, binary data, and
  *  nodes.  It also exposes bulk delete functions.
  */
-#define JSON_MEMORY_MANAGE
+//#define JSON_MEMORY_MANAGE
 
 
 /*
@@ -145,7 +131,7 @@
  *	should suffice for most cases.  libjson will distribute that within the pool for the best
  *	performance depending on other settings.
  */
-#define JSON_MEMORY_POOL 524288
+//#define JSON_MEMORY_POOL 524288
 
 
 /*
@@ -156,7 +142,7 @@
  *  your mutexs because of reference counting and manipulating trees, libjson automatically
  *  tracks mutex controls for you, so you only ever lock what you need to
  */
-#define JSON_MUTEX_CALLBACKS
+//#define JSON_MUTEX_CALLBACKS
 
 
 /*
@@ -165,13 +151,6 @@
  *  it when there are no more references
  */
 //#define JSON_MUTEX_MANAGE
-
-
-/*
- *  JSON_NO_C_CONSTS removes consts from the C interface.  It still acts the same way, but
- *  this may be useful for using the header with languages or variants that don't have const
- */
-//#define JSON_NO_C_CONSTS
 
 
 /*
@@ -223,7 +202,7 @@
  *  parsing json that has comments in it as it simply ignores them, but with this option
  *  it keeps the comments and allows you to insert further comments
  */
-#define JSON_COMMENTS
+//#define JSON_COMMENTS
 
 
 /*
@@ -239,7 +218,7 @@
  *  notation, or (#) if that option is on.  Some parsers do not support multiline C comments
  *  although, this option is not needed for bash comments, as they are all single line anyway
  */
-#define JSON_WRITE_SINGLE_LINE_COMMENTS
+//#define JSON_WRITE_SINGLE_LINE_COMMENTS
 
 
 /*
@@ -247,20 +226,20 @@
  *  in a write_formatted.  This is common for tuples, like coordinates.  If must be defined
  *  as an integer
  */
-#define JSON_ARRAY_SIZE_ON_ONE_LINE 5
+//#define JSON_ARRAY_SIZE_ON_ONE_LINE 2
 
 
 /*
  *  JSON_VALIDATE turns on validation features of libjson.
  */
-#define JSON_VALIDATE
+//#define JSON_VALIDATE
 
 
 /*
  *  JSON_CASE_INSENSITIVE_FUNCTIONS turns on funtions for finding child nodes in a case-
  *  insenititve way
  */
-#define JSON_CASE_INSENSITIVE_FUNCTIONS
+//#define JSON_CASE_INSENSITIVE_FUNCTIONS
 
 
 /*
@@ -276,7 +255,7 @@
  *  was no bool, and even then it's just a typedef, you may want to use something else.  If this
  *  is not defined, it will revert to int
  */
-//#define JSON_BOOL_TYPE char
+#define JSON_BOOL_TYPE bool
 
 
 /*
@@ -321,7 +300,7 @@
  *  compatibility between major releases.  It is highly recommended that you move your functions
  *  over to the new equivalents
  */
-#define JSON_DEPRECATED_FUNCTIONS
+//#define JSON_DEPRECATED_FUNCTIONS
 
 
 /*
