@@ -8,13 +8,11 @@
     }
 IMPLEMENT_FOR_ALL_TYPES(IMPLEMENT_CTOR)
 
-#ifndef JSON_LIBRARY
-    JSONNode::JSONNode(const json_string & name_t, const json_char * value_t) json_nothrow : internal(internalJSONNode::newInternal()){
-	   internal -> Set(json_string(value_t));
-	   internal -> setname(name_t);
-	   LIBJSON_CTOR;
-    }
-#endif
+JSONNode::JSONNode(const json_string & name_t, const json_char * value_t) json_nothrow : internal(internalJSONNode::newInternal()){
+   internal -> Set(json_string(value_t));
+   internal -> setname(name_t);
+   LIBJSON_CTOR;
+}
 
 #if (defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY))
     #include "JSONWorker.h"
@@ -236,17 +234,15 @@ const JSONNode & JSONNode::at(const json_string & name_t) const json_throws(std:
     }
 #endif
 
-#ifndef JSON_LIBRARY
-    struct auto_delete {
-	   public:
-		  auto_delete(JSONNode * node) json_nothrow : mynode(node){};
-		  ~auto_delete(void) json_nothrow { JSONNode::deleteJSONNode(mynode); };
-		  JSONNode * mynode;
-	   private:
-		  auto_delete(const auto_delete &);
-		  auto_delete & operator = (const auto_delete &);
-    };
-#endif
+struct auto_delete {
+   public:
+	  auto_delete(JSONNode * node) json_nothrow : mynode(node){};
+	  ~auto_delete(void) json_nothrow { JSONNode::deleteJSONNode(mynode); };
+	  JSONNode * mynode;
+   private:
+	  auto_delete(const auto_delete &);
+	  auto_delete & operator = (const auto_delete &);
+};
 
 JSONNode JSON_PTR_LIB JSONNode::pop_back(json_index_t pos) json_throws(std::out_of_range) {
     JSON_CHECK_INTERNAL();
@@ -255,43 +251,31 @@ JSONNode JSON_PTR_LIB JSONNode::pop_back(json_index_t pos) json_throws(std::out_
 	   json_throw(std::out_of_range(json_global(EMPTY_STD_STRING)));
     }
     makeUniqueInternal();
-    #ifdef JSON_LIBRARY
-	   return internal -> pop_back(pos);
-    #else
-	   auto_delete temp(internal -> pop_back(pos));
-	   return *temp.mynode;
-    #endif
+    auto_delete temp(internal -> pop_back(pos));
+    return *temp.mynode;
 }
 
 JSONNode JSON_PTR_LIB JSONNode::pop_back(const json_string & name_t) json_throws(std::out_of_range) {
     JSON_CHECK_INTERNAL();
     JSON_ASSERT(type() == JSON_NODE, json_global(ERROR_NON_ITERATABLE) + JSON_TEXT("pop_back"));
-    #ifdef JSON_LIBRARY
-	   return internal -> pop_back(name_t);
-    #else
-	   if (JSONNode * res = internal -> pop_back(name_t)){
-		  auto_delete temp(res);
-		  return *(temp.mynode);
-	   }
-	   JSON_FAIL(json_string(JSON_TEXT("pop_back const could not find child by name: ")) + name_t);
-	   json_throw(std::out_of_range(json_global(EMPTY_STD_STRING)));
-    #endif
+    if (JSONNode * res = internal -> pop_back(name_t)){
+      auto_delete temp(res);
+      return *(temp.mynode);
+    }
+    JSON_FAIL(json_string(JSON_TEXT("pop_back const could not find child by name: ")) + name_t);
+    json_throw(std::out_of_range(json_global(EMPTY_STD_STRING)));
 }
 
 #ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
     JSONNode JSON_PTR_LIB JSONNode::pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range) {
 	   JSON_CHECK_INTERNAL();
 	   JSON_ASSERT(type() == JSON_NODE, json_global(ERROR_NON_ITERATABLE) + JSON_TEXT("pop_back_no_case"));
-	   #ifdef JSON_LIBRARY
-		  return internal -> pop_back_nocase(name_t);
-	   #else
-		  if (JSONNode * res = internal -> pop_back_nocase(name_t)){
-			 auto_delete temp(res);
-			 return *(temp.mynode);
-		  }
-		  JSON_FAIL(json_string(JSON_TEXT("pop_back_nocase could not find child by name: ")) + name_t);
-		  json_throw(std::out_of_range(json_global(EMPTY_STD_STRING)));
-	   #endif
+        if (JSONNode * res = internal -> pop_back_nocase(name_t)){
+            auto_delete temp(res);
+            return *(temp.mynode);
+        }
+        JSON_FAIL(json_string(JSON_TEXT("pop_back_nocase could not find child by name: ")) + name_t);
+        json_throw(std::out_of_range(json_global(EMPTY_STD_STRING)));
     }
 #endif
 
@@ -360,5 +344,3 @@ JSONNode * JSONNode::newJSONNode_Shallow(const JSONNode & orig) {
 		return new JSONNode(true, const_cast<JSONNode &>(orig));
 	#endif
 }
-
-

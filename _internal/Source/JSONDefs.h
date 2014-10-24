@@ -103,11 +103,7 @@
 #endif
 
 #if defined JSON_DEBUG || defined JSON_SAFE
-    #ifdef JSON_LIBRARY
-	   typedef void (*json_error_callback_t)(const json_char *);
-    #else
-	   typedef void (*json_error_callback_t)(const json_string &);
-    #endif
+   	typedef void (*json_error_callback_t)(const json_string &);
 #endif
 
 #ifdef JSON_INDEX_TYPE
@@ -133,19 +129,8 @@ typedef void (*json_stream_e_callback_t)(void * identifier);
 
 typedef void (*json_mutex_callback_t)(void *);
 typedef void (*json_free_t)(void *);
-#ifndef JSON_LIBRARY
-    typedef void * (*json_malloc_t)(size_t);
-    typedef void * (*json_realloc_t)(void *, size_t);
-#else
-    #define JSONNODE void  /* so that JSONNODE* is void* */
-    typedef JSONNODE** JSONNODE_ITERATOR;
-    #ifdef JSON_STREAM
-	   #define JSONSTREAM void
-	    typedef void (*json_stream_callback_t)(JSONNODE *, void * identifier);
-    #endif
-    typedef void * (*json_malloc_t)(unsigned long);
-    typedef void * (*json_realloc_t)(void *, unsigned long);
-#endif
+typedef void * (*json_malloc_t)(size_t);
+typedef void * (*json_realloc_t)(void *, size_t);
 
 #ifdef JSON_DEBUG
     #ifdef NDEBUG

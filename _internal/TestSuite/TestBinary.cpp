@@ -24,17 +24,5 @@
 	   std::string rs = JSONBase64::json_decode64(ts);
 	   assertEquals(rs.size(), 255);
 	   assertEquals(memcmp(rs.data(), temp, 255), 0);
-		
-		#if defined(JSON_LIBRARY) && defined(JSON_EXPOSE_BASE64)
-			json_char * test = json_encode64(temp, 255);
-			assertNotNull(test);
-			unsigned long _size;
-			void * bin = json_decode64(test, & _size);
-			assertNotNull(bin);
-			assertEquals(_size, 255);
-			assertEquals(memcmp(bin, temp, 255), 0);
-			json_free(test);
-			json_free(bin);
-		#endif
     }
 #endif

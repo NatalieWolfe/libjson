@@ -69,17 +69,6 @@ json_global_decl(json_string, CONST_NULL, JSON_TEXT("null"));
 	json_global_decl(JSON_MAP(int, JSON_MAP(void *, unsigned int) ), THREAD_LOCKS, );
 #endif
 
-#ifdef JSON_LIBRARY
-	#ifdef JSON_MEMORY_MANAGE
-		#include "JSONMemory.h"
-		json_global_decl(auto_expand, STRING_HANDLER, );
-		json_global_decl(auto_expand_node, NODE_HANDLER, );
-		#ifdef JSON_STREAM
-			json_global_decl(auto_expand_stream, STREAM_HANDLER, );
-		#endif
-	#endif
-#endif
-
 //These are common error responses
 json_global_decl(json_string, ERROR_TOO_LONG, JSON_TEXT("Exceeding JSON_SECURITY_MAX_STRING_LENGTH"));
 json_global_decl(json_string, ERROR_UNKNOWN_LITERAL, JSON_TEXT("Unknown JSON literal: "));

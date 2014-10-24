@@ -183,21 +183,15 @@ public:
 	   shrink();
     }
 
-    #ifdef JSON_LIBRARY
-	   void insert(JSONNode ** & position, JSONNode * item) json_nothrow{
-    #else
-	   void insert(JSONNode ** & position, JSONNode * item, bool reverse = false) json_nothrow {
-    #endif
+    void insert(JSONNode ** & position, JSONNode * item, bool reverse = false) json_nothrow {
 	   JSON_ASSERT(this != 0, JSON_TEXT("Children is null insert"));
 	   //position isnt relative to array because of realloc
 	   JSON_ASSERT(position >= array, JSON_TEXT("position is beneath the start of the array insert 1"));
 	   JSON_ASSERT(position <= array + mysize, JSON_TEXT("position is above the end of the array insert 1"));
-		#ifndef JSON_LIBRARY
 		if (reverse){
 			iteratorKeeper<true> ik(this, position);
 			inc();
-		} else 
-		#endif
+		} else
 		{
 			iteratorKeeper<false> ik(this, position);
 			inc();

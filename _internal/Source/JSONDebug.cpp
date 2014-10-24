@@ -23,11 +23,7 @@ void JSONDebug::_JSON_FAIL(const json_string & msg) json_nothrow {
 	   #endif
     #else
 	   if (json_error_callback_t ErrorCallback = JSONSingleton<json_error_callback_t>::get()){  //only do anything if the callback is registered
-		  #ifdef JSON_LIBRARY
-			 ErrorCallback(msg.c_str());
-		  #else
-			 ErrorCallback(msg);
-		  #endif
+			ErrorCallback(msg);
 	   }
     #endif
 }
@@ -39,4 +35,3 @@ void JSONDebug::_JSON_ASSERT(bool condition, const json_string & msg) json_nothr
     }
 }
 #endif
-
