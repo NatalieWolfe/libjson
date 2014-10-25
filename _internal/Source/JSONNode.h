@@ -35,21 +35,12 @@
 #define JSON_PTR_LIB
 #define JSON_NEW(x) x
 
-#ifdef JSON_ISO_STRICT
-   #define DECLARE_FOR_LONG_LONG(foo)
-   #define DECLARE_FOR_LONG_LONG_CONST(foo)
-   #define IMPLEMENT_FOR_LONG_LONG(foo)
-   #define DECLARE_FOR_LONG_DOUBLE(foo)
-   #define DECLARE_FOR_LONG_DOUBLE_CONST(foo)
-   #define IMPLEMENT_FOR_LONG_DOUBLE(foo)
-#else
-   #define DECLARE_FOR_LONG_LONG(foo) foo(long long) json_nothrow; foo(unsigned long long) json_nothrow;
-   #define DECLARE_FOR_LONG_LONG_CONST(foo) foo(long long) const json_nothrow; foo(unsigned long long) const json_nothrow;
-   #define IMPLEMENT_FOR_LONG_LONG(foo) foo(long long) foo(unsigned long long)
-   #define DECLARE_FOR_LONG_DOUBLE(foo) foo(long double) json_nothrow;
-   #define DECLARE_FOR_LONG_DOUBLE_CONST(foo) foo(long double) const json_nothrow;
-   #define IMPLEMENT_FOR_LONG_DOUBLE(foo) foo(long double)
-#endif
+#define DECLARE_FOR_LONG_LONG(foo) foo(long long) json_nothrow; foo(unsigned long long) json_nothrow;
+#define DECLARE_FOR_LONG_LONG_CONST(foo) foo(long long) const json_nothrow; foo(unsigned long long) const json_nothrow;
+#define IMPLEMENT_FOR_LONG_LONG(foo) foo(long long) foo(unsigned long long)
+#define DECLARE_FOR_LONG_DOUBLE(foo) foo(long double) json_nothrow;
+#define DECLARE_FOR_LONG_DOUBLE_CONST(foo) foo(long double) const json_nothrow;
+#define IMPLEMENT_FOR_LONG_DOUBLE(foo) foo(long double)
 
 #define DECLARE_FOR_ALL_TYPES(foo)\
    foo(char) json_nothrow;	 foo(unsigned char) json_nothrow;\

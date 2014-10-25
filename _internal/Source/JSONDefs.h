@@ -63,20 +63,6 @@
     #endif
 #endif
 
-#ifdef JSON_ISO_STRICT
-    #ifdef JSON_UNICODE
-	   #error, You can not use unicode under ANSI Strict C++
-    #endif
-#else
-    #ifdef __GNUC__
-	   #ifdef __STRICT_ANSI__
-		  #warning, Using -ansi GCC option, but JSON_ISO_STRICT not on, turning it on for you
-		  #define JSON_ISO_STRICT
-	   #endif
-    #endif
-#endif
-
-
 #ifdef JSON_NUMBER_TYPE
 	typedef JSON_NUMBER_TYPE json_number;
 	#define JSON_FLOAT_THRESHHOLD 0.00001

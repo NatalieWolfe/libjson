@@ -144,10 +144,8 @@ public:
 	   DECL_SET_INTEGER(short)
 	   DECL_SET_INTEGER(int)
 	   DECL_SET_INTEGER(long)
-	   #ifndef JSON_ISO_STRICT
-		  DECL_SET_INTEGER(long long)
-		  void Set(long double val) json_nothrow json_write_priority;
-	   #endif
+	   DECL_SET_INTEGER(long long)
+	   void Set(long double val) json_nothrow json_write_priority;
 	   void Set(float val) json_nothrow json_write_priority;
 	   void Set(double val) json_nothrow json_write_priority;
 
@@ -156,10 +154,8 @@ public:
 	   DECL_CAST_OP(short)
 	   DECL_CAST_OP(int)
 	   DECL_CAST_OP(long)
-	   #ifndef JSON_ISO_STRICT
-		  DECL_CAST_OP(long long)
-		  operator long double() const json_nothrow;
-	   #endif
+	   DECL_CAST_OP(long long)
+	   operator long double() const json_nothrow;
 	   operator float() const json_nothrow;
 	   operator double() const json_nothrow;
     #endif
@@ -446,11 +442,7 @@ inline JSONNode * internalJSONNode::at(json_index_t pos) json_nothrow {
     cast operators
 */
 #ifndef JSON_LIBRARY
-    #ifdef JSON_ISO_STRICT
-	   #define BASE_CONVERT_TYPE long
-    #else
-	   #define BASE_CONVERT_TYPE long long
-    #endif
+    #define BASE_CONVERT_TYPE long long
 
     #define IMP_SMALLER_INT_CAST_OP(_type, type_max, type_min)\
 	   inline internalJSONNode::operator _type() const json_nothrow {\
@@ -467,10 +459,8 @@ inline JSONNode * internalJSONNode::at(json_index_t pos) json_nothrow {
     IMP_SMALLER_INT_CAST_OP(int, INT_MAX, INT_MIN)
     IMP_SMALLER_INT_CAST_OP(unsigned int, UINT_MAX, 0)
 
-    #ifndef JSON_ISO_STRICT
-	   IMP_SMALLER_INT_CAST_OP(long, LONG_MAX, LONG_MIN)
-	   IMP_SMALLER_INT_CAST_OP(unsigned long, ULONG_MAX, 0)
-    #endif
+    IMP_SMALLER_INT_CAST_OP(long, LONG_MAX, LONG_MIN)
+    IMP_SMALLER_INT_CAST_OP(unsigned long, ULONG_MAX, 0)
 #endif
 
 inline internalJSONNode::operator json_string() const json_nothrow {
@@ -479,20 +469,12 @@ inline internalJSONNode::operator json_string() const json_nothrow {
 }
 
 
-#ifndef JSON_LIBRARY
-    #ifndef JSON_ISO_STRICT
-	   inline internalJSONNode::operator float() const json_nothrow {
-		  return static_cast<float>(static_cast<long double>(*this));
-	   }
-	   inline internalJSONNode::operator double() const json_nothrow {
-		  return static_cast<double>(static_cast<long double>(*this));
-	   }
-    #else
-	   inline internalJSONNode::operator float() const json_nothrow {
-		  return static_cast<float>(static_cast<double>(*this));
-	   }
-    #endif
-#endif
+inline internalJSONNode::operator float() const json_nothrow {
+  return static_cast<float>(static_cast<long double>(*this));
+}
+inline internalJSONNode::operator double() const json_nothrow {
+  return static_cast<double>(static_cast<long double>(*this));
+}
 
 #ifdef JSON_LESS_MEMORY
     #ifdef __GNUC__
