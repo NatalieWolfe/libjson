@@ -16,7 +16,7 @@ Roadmap
 -------
 
 1. [x] Remove all code for C library.
-2. [ ] Remove all ISO strict code.
+2. [x] Remove all ISO strict code.
 3. [ ] Clean and document files:
   - [ ] libjson.h
   - [ ] JSONOptions.h
