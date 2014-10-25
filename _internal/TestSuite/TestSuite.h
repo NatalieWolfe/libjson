@@ -55,55 +55,19 @@ public:
 #endif
 	static void TestSharedString(void);
     static void TestFinal(void);
-	
-	
-	
-	
-	
-#ifdef JSON_LIBRARY
-	static void testParsingItself(JSONNODE * x){
-	   #if defined(JSON_WRITE_PRIORITY) && defined(JSON_READ_PRIORITY)
-		  {
-			 json_char * written = json_write(x);
-			 JSONNODE * copy = json_parse(written);
-			 assertTrue(json_equal(x, copy));
-			 json_delete(copy);
-			 json_free(written);
-		  }
-		  {
-			 json_char * written = json_write_formatted(x);
-			 JSONNODE * copy = json_parse(written);
-			 assertTrue(json_equal(x, copy));
-			 json_delete(copy);
-			 json_free(written);
-		  }
-		  {
-			 json_char * written = json_write_formatted(x);
-			 json_char * written2 = json_write(x);
-			 json_char * stripped = json_strip_white_space(written);
-			 assertCStringSame(written2, stripped);
-			 json_free(stripped);
-			 json_free(written);
-			 json_free(written2);
-		  }
-	  #endif
-	  {
-		 JSONNODE * copy = json_duplicate(x);
-		 assertTrue(json_equal(x, copy));
-		 json_delete(copy);
-	  }
-   }
-#else
-	static void testParsingItself(JSONNode & x){
-		#if defined(JSON_WRITE_PRIORITY) && defined(JSON_READ_PRIORITY)
-			assertEquals(libjson::parse(x.write()), x);
-			assertEquals(libjson::parse(x.write_formatted()), x);
-			assertEquals(libjson::strip_white_space(x.write_formatted()), x.write());
-		#endif
-		assertEquals(x, x.duplicate())
-	}
-#endif
+
+
+
+
+
+static void testParsingItself(JSONNode & x){
+	#if defined(JSON_WRITE_PRIORITY) && defined(JSON_READ_PRIORITY)
+		assertEquals(libjson::parse(x.write()), x);
+		assertEquals(libjson::parse(x.write_formatted()), x);
+		assertEquals(libjson::strip_white_space(x.write_formatted()), x.write());
+	#endif
+	assertEquals(x, x.duplicate())
+}
 };
 
 #endif
-

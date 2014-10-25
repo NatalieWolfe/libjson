@@ -28,31 +28,27 @@ void TestSuite::TestConverters(void){
 
     #ifdef TEST_LONG_EXTREMES
 	   assertEquals(NumberToString::_itoa<long>(9223372036854775807L), JSON_TEXT("9223372036854775807"));
-           assertEquals(NumberToString::_itoa<long>(-9223372036854775807L), JSON_TEXT("-9223372036854775807"));
-	   #ifndef JSON_LIBRARY
-		  assertEquals(NumberToString::_uitoa<unsigned long>(18446744073709551615UL), JSON_TEXT("18446744073709551615"));
-	   #endif
+       assertEquals(NumberToString::_itoa<long>(-9223372036854775807L), JSON_TEXT("-9223372036854775807"));
+	   assertEquals(NumberToString::_uitoa<unsigned long>(18446744073709551615UL), JSON_TEXT("18446744073709551615"));
     #endif
     assertEquals(NumberToString::_itoa<long>(15), JSON_TEXT("15"));
     assertEquals(NumberToString::_itoa<long>(0), JSON_TEXT("0"));
     assertEquals(NumberToString::_itoa<long>(-15), JSON_TEXT("-15"));
 
-    #ifndef JSON_LIBRARY
-	   assertEquals(NumberToString::_uitoa<unsigned char>(255), JSON_TEXT("255"));
-	   assertEquals(NumberToString::_uitoa<unsigned char>(15), JSON_TEXT("15"));
-	   assertEquals(NumberToString::_uitoa<unsigned char>(0), JSON_TEXT("0"));
+    assertEquals(NumberToString::_uitoa<unsigned char>(255), JSON_TEXT("255"));
+    assertEquals(NumberToString::_uitoa<unsigned char>(15), JSON_TEXT("15"));
+    assertEquals(NumberToString::_uitoa<unsigned char>(0), JSON_TEXT("0"));
 
-	   assertEquals(NumberToString::_uitoa<unsigned short>(65535), JSON_TEXT("65535"));
-	   assertEquals(NumberToString::_uitoa<unsigned short>(15), JSON_TEXT("15"));
-	   assertEquals(NumberToString::_uitoa<unsigned short>(0), JSON_TEXT("0"));
+    assertEquals(NumberToString::_uitoa<unsigned short>(65535), JSON_TEXT("65535"));
+    assertEquals(NumberToString::_uitoa<unsigned short>(15), JSON_TEXT("15"));
+    assertEquals(NumberToString::_uitoa<unsigned short>(0), JSON_TEXT("0"));
 
-	   assertEquals(NumberToString::_uitoa<unsigned int>(4294967295u), JSON_TEXT("4294967295"));
-	   assertEquals(NumberToString::_uitoa<unsigned int>(15), JSON_TEXT("15"));
-	   assertEquals(NumberToString::_uitoa<unsigned int>(0), JSON_TEXT("0"));
+    assertEquals(NumberToString::_uitoa<unsigned int>(4294967295u), JSON_TEXT("4294967295"));
+    assertEquals(NumberToString::_uitoa<unsigned int>(15), JSON_TEXT("15"));
+    assertEquals(NumberToString::_uitoa<unsigned int>(0), JSON_TEXT("0"));
 
-	   assertEquals(NumberToString::_uitoa<unsigned long>(15), JSON_TEXT("15"));
-	   assertEquals(NumberToString::_uitoa<unsigned long>(0), JSON_TEXT("0"));
-    #endif
+    assertEquals(NumberToString::_uitoa<unsigned long>(15), JSON_TEXT("15"));
+    assertEquals(NumberToString::_uitoa<unsigned long>(0), JSON_TEXT("0"));
 
     assertEquals(NumberToString::_ftoa((json_number)1.0), JSON_TEXT("1"));
     assertEquals(NumberToString::_ftoa((json_number)1.002), JSON_TEXT("1.002"));
@@ -201,4 +197,3 @@ void TestSuite::TestConverters(void){
     #endif
 
 }
-

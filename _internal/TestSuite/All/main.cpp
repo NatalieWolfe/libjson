@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <map>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 #include "../UnitTest.h"
 
 using namespace std;
@@ -26,7 +26,6 @@ string makeOptions[] = {
 };
 
 void makeMap(void){
-    options["LIBRARY"] = "#define JSON_LIBRARY";
     options["DEBUG"] = "#define JSON_DEBUG";
     options["STREAM"] = "#define JSON_STREAM";
     options["SAFE"] = "#define JSON_SAFE";
@@ -50,7 +49,7 @@ void makeMap(void){
     options["WRITE_SINGLE_LINE_COMMENTS"] = "#define JSON_WRITE_SINGLE_LINE_COMMENTS";
     options["VALIDATE"] = "#define JSON_VALIDATE";
     options["UNIT_TEST"] = "#define JSON_UNIT_TEST";
-    options["INDEX_TYPE"] = "#define JSON_INDEX_TYPE unsigned int";  
+    options["INDEX_TYPE"] = "#define JSON_INDEX_TYPE unsigned int";
     options["CASE_INSENSITIVE_FUNCTIONS"] = "#define JSON_CASE_INSENSITIVE_FUNCTIONS";
     options["ESCAPE_WRITES"] = "#define JSON_ESCAPE_WRITES";
     options["STRINGU_HEADER"] = "#define JSON_STRING_HEADER \"../TestSuite/UStringTest.h\"";
@@ -66,7 +65,7 @@ void testRules(unsigned int i){
     bool Archive = false;
     if (FILE * fp = fopen("./testapp", "r")){
 	   fclose(fp);
-	   
+
 	   remove("./out.html");
 	   q = system("./testapp");
 	   if (FILE * fp = fopen("./out.html", "r")){
@@ -92,7 +91,7 @@ void testRules(unsigned int i){
 		  FAIL("Running crashed");
 		  ArchivedOptions = std::string("Crashed_") + ArchivedOptions;
 		  Archive = true;
-	   }   
+	   }
     } else {
 	   FAIL(string("Compilation failed - ") + lines[i]);
 	   ArchivedOptions = std::string("Compile_") + ArchivedOptions;
@@ -116,20 +115,20 @@ void testRules(unsigned int i){
 
 bool makeTempOptions(unsigned int i){
     string & line = lines[i];
-    
+
     if (FILE * fp = fopen("../JSONOptions.h", "w")){
 	   string res("#ifndef JSON_OPTIONS_H\n#define JSON_OPTIONS_H\n");
 	   for (
 		   map<string, string>::iterator runner = options.begin(), end = options.end();
 		   runner != end;
 		   ++runner){
-		  
+
 		  if (line.find(runner -> first) != string::npos){
 			 res += runner -> second + "\n";
 		  }
 	   }
 	   res += "#endif\n";
-	   
+
 	   fwrite(res.c_str(), res.length(), 1, fp);
 	   fclose(fp);
 	   return true;
@@ -138,7 +137,7 @@ bool makeTempOptions(unsigned int i){
 }
 
 bool hideGoodOptions(void){
-    struct stat stFileInfo; 
+    struct stat stFileInfo;
     if (stat("../__JSONOptions.h", &stFileInfo)){
 	remove("../JSONOptions.h");
 	return true;
@@ -148,11 +147,11 @@ bool hideGoodOptions(void){
 
 bool loadTests(){
     ifstream infile("All/Options.txt");
-    
+
     if (!infile){
 	   return false;
     }
-    
+
     string line;
     unsigned int iii = 0;
     while (getline(infile, line)){
@@ -196,7 +195,7 @@ void Go(const std::string & version, unsigned int test){
     echo(make);
     if (makeStyle.empty() || (makeStyle == version)){
 	   makeStyle.clear();
-	   for (unsigned int i = test; i < lines.size(); ++i){   
+	   for (unsigned int i = test; i < lines.size(); ++i){
 		  RunTest(version, i);
 	   }
     } else {
@@ -214,15 +213,15 @@ void RunTests(unsigned int test){
 			Go(makeOptions[i], test);
 		 }
 	   } else {
-		  FAIL("couldn't open options");  
+		  FAIL("couldn't open options");
 	   }
 	   rename("../__JSONOptions.h", "../JSONOptions.h");
     } else {
 	   FAIL("Couldn't protect JSONOptions");
-    }   
+    }
 }
 
-int main (int argc, char * const argv[]) { 
+int main (int argc, char * const argv[]) {
     UnitTest::StartTime();
     unsigned int test = 0;
     if (argc == 3){
@@ -238,7 +237,7 @@ int main (int argc, char * const argv[]) {
 	   makeStyle = argv[1];
 	   echo("starting with make " << makeStyle);
     }
-    
+
     RunTests(test);
 
     UnitTest::SaveTo("out.html");

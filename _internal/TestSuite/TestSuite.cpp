@@ -3,12 +3,7 @@
 
 #ifndef JSON_STDERROR
     #ifdef JSON_DEBUG
-	   #ifdef JSON_LIBRARY
-	   static void callback(const json_char * msg_c){
-		  json_string msg(msg_c);
-	   #else
 	   static void callback(const json_string & msg){
-	   #endif
 		  #ifdef JSON_STRING_HEADER
 			 echo("callback triggered, but can't display string");
 		  #else
@@ -27,16 +22,12 @@ void TestSuite::TestSelf(void){
     UnitTest::SetPrefix("TestSuite.cpp - Self Test");
     #ifndef JSON_STDERROR
 	   #ifdef JSON_DEBUG
-		  #ifdef JSON_LIBRARY
-			 json_register_debug_callback(callback);
-		  #else
-			 libjson::register_debug_callback(callback);
-		  #endif
+		  libjson::register_debug_callback(callback);
 	   #endif
     #endif
     assertUnitTest();
 
-    #if defined(JSON_SAFE) && ! defined(JSON_LIBRARY)
+    #if defined(JSON_SAFE)
 	   bool temp = false;
 	   JSON_ASSERT_SAFE(true, JSON_TEXT(""), temp = true;);
 	   assertFalse(temp);

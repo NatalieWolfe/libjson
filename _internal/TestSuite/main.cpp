@@ -46,47 +46,43 @@ void DoTests(void){
     //used to check load
     size_t maxBytes = 0;
     size_t currentBytes = 0;
-    #ifdef JSON_LIBRARY
-        #define MEMTYPE unsigned long
-    #else
-        #define MEMTYPE size_t
-    #endif
+    #define MEMTYPE size_t
     #include <map>
 	#include <vector>
     std::map<void *, MEMTYPE> mem_mapping;
 	std::vector<size_t> bytesallocated;
 
     void * testmal(MEMTYPE siz);
-	void * testmal(MEMTYPE siz){ 
-        ++mallocs; 
-        bytes += (long)siz; 
+	void * testmal(MEMTYPE siz){
+        ++mallocs;
+        bytes += (long)siz;
         currentBytes += siz;
         if (currentBytes > maxBytes) maxBytes = currentBytes;
 		bytesallocated.push_back(currentBytes);
 
-        void * res = std::malloc(siz); 
+        void * res = std::malloc(siz);
         mem_mapping[res] = siz;
         return res;
      }
 
     void testfree(void * ptr);
-    void testfree(void * ptr){ 
-        ++frees; 
+    void testfree(void * ptr){
+        ++frees;
 
         std::map<void *, MEMTYPE>::iterator i = mem_mapping.find(ptr);
         if (i != mem_mapping.end()){  //globals
             currentBytes -= mem_mapping[ptr];
             mem_mapping.erase(ptr);
         }
-		
+
 		bytesallocated.push_back(currentBytes);
 
-        std::free(ptr); 
+        std::free(ptr);
     }
 
 	void * testreal(void * ptr, MEMTYPE siz);
-	void * testreal(void * ptr, MEMTYPE siz){ 
-        ++reallocs; 
+	void * testreal(void * ptr, MEMTYPE siz){
+        ++reallocs;
 
         std::map<void *, MEMTYPE>::iterator i = mem_mapping.find(ptr);
         if (i != mem_mapping.end()){  //globals
@@ -96,20 +92,16 @@ void DoTests(void){
         currentBytes += siz;
         if (currentBytes > maxBytes) maxBytes = currentBytes;
 		bytesallocated.push_back(currentBytes);
-        
 
-        void * res = std::realloc(ptr, siz); 
+
+        void * res = std::realloc(ptr, siz);
         mem_mapping[res] = siz;
         return res;
     }
 
     void doMemTests(void);
     void doMemTests(void){
-	   #ifdef JSON_LIBRARY
-		  json_register_memory_callbacks(testmal, testreal, testfree);
-	   #else
-		  libjson::register_memory_callbacks(testmal, testreal, testfree);
-	   #endif
+	   libjson::register_memory_callbacks(testmal, testreal, testfree);
 	   DoTests();
 	   echo("mallocs: " << mallocs);
 	   echo("frees: " << frees);
@@ -131,10 +123,10 @@ void DoTests(void){
 
 #include "RunTestSuite2.h"
 
-int main () {	
+int main () {
     UnitTest::StartTime();
 	TestSuite::TestSelf();
-	
+
     DoTests();
 
     #ifdef JSON_MEMORY_CALLBACKS
@@ -142,7 +134,7 @@ int main () {
     #endif
 
 	RunTestSuite2::RunTests();
-	
+
     UnitTest::SaveTo("out.html");
 
     return 0;

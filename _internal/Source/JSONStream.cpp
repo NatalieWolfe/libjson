@@ -23,16 +23,12 @@ JSONStream & JSONStream::operator =(const JSONStream & orig) json_nothrow {
     return *this;
 }
 
-#ifdef JSON_LIBRARY
-    JSONStream & JSONStream::operator << (const json_char * str) json_nothrow {
-#else
-    JSONStream & JSONStream::operator << (const json_string & str) json_nothrow {
-#endif
-		if (state){
-			buffer += str;
-			parse();
-		}
-		return *this;
+JSONStream & JSONStream::operator << (const json_string & str) json_nothrow {
+	if (state){
+		buffer += str;
+		parse();
+	}
+	return *this;
 }
 
 
@@ -107,11 +103,7 @@ void JSONStream::parse(void) json_nothrow {
 			  #endif
 			  START_MEM_SCOPE
 				 JSONNode temp(JSONWorker::parse(buffer.substr(pos, end - pos + 1)));
-				 #ifndef JSON_LIBRARY
-					call(temp, getIdentifier());
-				 #else
-					call(&temp, getIdentifier());
-				 #endif
+				 call(temp, getIdentifier());
 			  END_MEM_SCOPE
 			  json_string::iterator beginning = buffer.begin();
 			  buffer.erase(beginning, beginning + end);
@@ -121,14 +113,14 @@ void JSONStream::parse(void) json_nothrow {
 				else {
 					//verify that what's in there is at least valid so far
 					#ifndef JSON_VALIDATE
-						#error In order to use safe mode and streams, JSON_VALIDATE needs to be defined			
+						#error In order to use safe mode and streams, JSON_VALIDATE needs to be defined
 					#endif
-					
+
 					json_auto<json_char> s;
 					size_t len;
 					s.set(JSONWorker::RemoveWhiteSpace(json_string(buffer.c_str() + pos), len, false));
-					
-					
+
+
 					if (!JSONValidator::isValidPartialRoot(s.ptr)){
 						if (err_call) err_call(getIdentifier());
 						state = false;

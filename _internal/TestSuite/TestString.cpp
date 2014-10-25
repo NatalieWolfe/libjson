@@ -170,28 +170,26 @@ void TestSuite::TestString(void){
 	   s.erase(s.begin(), s.begin() + 3);
 	   assertEquals(s, JSON_TEXT("lo world"));
     }
-	
+
 	{
 	   json_string s(JSON_TEXT("hello world"), 5);
 	   assertEquals(s, JSON_TEXT("hello"));
     }
-	
-	#ifndef JSON_LIBRARY	
-        #ifndef JSON_STRING_HEADER
-	        {
-		        json_string s(JSON_TEXT("hello world"));
-		        std::wstring wtest(L"hello world");
-		        std::string stest("hello world");
-		        assertEquals(libjson::to_std_string(s), stest);
-		        assertEquals(stest, libjson::to_std_string(s));
-		        assertEquals(libjson::to_std_wstring(s), wtest);
-		        assertEquals(wtest, libjson::to_std_wstring(s));
-		
-		        assertEquals(s, libjson::to_json_string(stest));
-		        assertEquals(libjson::to_json_string(stest), s);
-		        assertEquals(s, libjson::to_json_string(wtest));
-		        assertEquals(libjson::to_json_string(wtest), s);
-	        }
-        #endif
-	#endif
+
+    #ifndef JSON_STRING_HEADER
+        {
+	        json_string s(JSON_TEXT("hello world"));
+	        std::wstring wtest(L"hello world");
+	        std::string stest("hello world");
+	        assertEquals(libjson::to_std_string(s), stest);
+	        assertEquals(stest, libjson::to_std_string(s));
+	        assertEquals(libjson::to_std_wstring(s), wtest);
+	        assertEquals(wtest, libjson::to_std_wstring(s));
+
+	        assertEquals(s, libjson::to_json_string(stest));
+	        assertEquals(libjson::to_json_string(stest), s);
+	        assertEquals(s, libjson::to_json_string(wtest));
+	        assertEquals(libjson::to_json_string(wtest), s);
+        }
+    #endif
 }

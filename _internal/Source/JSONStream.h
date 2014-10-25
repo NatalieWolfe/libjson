@@ -17,10 +17,8 @@
 #include "JSONMemory.h"
 #endif
 
-#ifndef JSON_LIBRARY
 class JSONNode; //foreward declaration
 typedef void (*json_stream_callback_t)(JSONNode &, void *);
-#endif
 
 class JSONStream {
 public:
@@ -29,11 +27,7 @@ public:
     JSONStream(const JSONStream & orig) json_nothrow;
     JSONStream & operator =(const JSONStream & orig) json_nothrow;
 	~JSONStream(void) json_nothrow { LIBJSON_DTOR; }
-#ifdef JSON_LIBRARY
-	JSONStream & operator << (const json_char * str) json_nothrow;
-#else
 	JSONStream & operator << (const json_string & str) json_nothrow;
-#endif
 	
     static void deleteJSONStream(JSONStream * stream) json_nothrow {
 #ifdef JSON_MEMORY_CALLBACKS
@@ -43,7 +37,7 @@ public:
 		delete stream;
 #endif
     }
-	
+
     static JSONStream * newJSONStream(json_stream_callback_t callback, json_stream_e_callback_t call_e, void * callbackIdentifier) json_nothrow {
 #ifdef JSON_MEMORY_CALLBACKS
 		return new(json_malloc<JSONStream>(1)) JSONStream(callback, call_e, callbackIdentifier);
@@ -51,7 +45,7 @@ public:
 		return new JSONStream(callback, call_e, callbackIdentifier);
 #endif
     }
-	
+
 	inline void reset() json_nothrow {
 		state = true;
 		buffer.clear();
@@ -63,14 +57,14 @@ JSON_PRIVATE
 		}
 		return callback_identifier;
 	}
-	
+
 	#if (JSON_READ_PRIORITY == JSON_PRIO_HIGH) && (!(defined(JSON_LESS_MEMORY)))
 		template<json_char ch>
 		static size_t FindNextRelevant(const json_string & value_t, const size_t pos) json_nothrow json_read_priority;
 	#else
 		static size_t FindNextRelevant(json_char ch, const json_string & value_t, const size_t pos) json_nothrow json_read_priority;
 	#endif
-	
+
     void parse(void) json_nothrow;
     json_string buffer;
     json_stream_callback_t call;
@@ -90,4 +84,3 @@ JSON_PRIVATE
 #endif
 
 #endif
-

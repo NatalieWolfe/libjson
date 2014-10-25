@@ -12,11 +12,7 @@
 		#define last             last_f()
 		// ~ static json_string last;
 
-		#ifdef JSON_LIBRARY
-			static void callback(const json_char * p){ last = p; }
-		#else
-			static void callback(const json_string & p){ last = p; }
-		#endif
+		static void callback(const json_string & p){ last = p; }
 	#endif
 #endif
 

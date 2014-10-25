@@ -29,10 +29,8 @@
 
 class JSONNode;  //forward declaration
 
-#ifndef JSON_LIBRARY
-    #define DECL_SET_INTEGER(type) void Set(type) json_nothrow json_write_priority; void Set(unsigned type) json_nothrow json_write_priority;
-    #define DECL_CAST_OP(type) operator type() const json_nothrow; operator unsigned type() const json_nothrow;
-#endif
+#define DECL_SET_INTEGER(type) void Set(type) json_nothrow json_write_priority; void Set(unsigned type) json_nothrow json_write_priority;
+#define DECL_CAST_OP(type) operator type() const json_nothrow; operator unsigned type() const json_nothrow;
 
 #ifdef JSON_MUTEX_CALLBACKS
     #define initializeMutex(x) ,mylock(x)
@@ -113,11 +111,7 @@ public:
 	   void preparse(void) json_nothrow;
     #endif
 
-    #ifdef JSON_LIBRARY
-	   void push_back(JSONNode * node) json_nothrow;
-    #else
-	   void push_back(const JSONNode & node) json_nothrow;
-    #endif
+    void push_back(const JSONNode & node) json_nothrow;
     void reserve(json_index_t siz) json_nothrow;
     void push_front(const JSONNode & node) json_nothrow;
     JSONNode * pop_back(json_index_t pos) json_nothrow;
@@ -134,31 +128,24 @@ public:
     #endif
 
     void Set(const json_string & val) json_nothrow json_write_priority;
-    #ifdef JSON_LIBRARY
-	   void Set(json_number val) json_nothrow json_write_priority;
-	   void Set(json_int_t val) json_nothrow json_write_priority;
-	   operator json_int_t() const json_nothrow;
-	   operator json_number() const json_nothrow;
-    #else
-	   DECL_SET_INTEGER(char)
-	   DECL_SET_INTEGER(short)
-	   DECL_SET_INTEGER(int)
-	   DECL_SET_INTEGER(long)
-	   DECL_SET_INTEGER(long long)
-	   void Set(long double val) json_nothrow json_write_priority;
-	   void Set(float val) json_nothrow json_write_priority;
-	   void Set(double val) json_nothrow json_write_priority;
+    DECL_SET_INTEGER(char)
+    DECL_SET_INTEGER(short)
+    DECL_SET_INTEGER(int)
+    DECL_SET_INTEGER(long)
+    DECL_SET_INTEGER(long long)
+    void Set(long double val) json_nothrow json_write_priority;
+    void Set(float val) json_nothrow json_write_priority;
+    void Set(double val) json_nothrow json_write_priority;
 
 
-	   DECL_CAST_OP(char)
-	   DECL_CAST_OP(short)
-	   DECL_CAST_OP(int)
-	   DECL_CAST_OP(long)
-	   DECL_CAST_OP(long long)
-	   operator long double() const json_nothrow;
-	   operator float() const json_nothrow;
-	   operator double() const json_nothrow;
-    #endif
+    DECL_CAST_OP(char)
+    DECL_CAST_OP(short)
+    DECL_CAST_OP(int)
+    DECL_CAST_OP(long)
+    DECL_CAST_OP(long long)
+    operator long double() const json_nothrow;
+    operator float() const json_nothrow;
+    operator double() const json_nothrow;
     operator json_string()const json_nothrow;
     operator bool() const json_nothrow;
     void Set(bool val) json_nothrow;
@@ -240,10 +227,8 @@ public:
     }
 
     #ifdef JSON_DEBUG
-	   #ifndef JSON_LIBRARY
-		  JSONNode Dump(size_t & totalmemory) const json_nothrow;
-		  JSONNode DumpMutex(void) const json_nothrow;
-	   #endif
+        JSONNode Dump(size_t & totalmemory) const json_nothrow;
+        JSONNode DumpMutex(void) const json_nothrow;
     #endif
 
 
@@ -441,27 +426,25 @@ inline JSONNode * internalJSONNode::at(json_index_t pos) json_nothrow {
 /*
     cast operators
 */
-#ifndef JSON_LIBRARY
-    #define BASE_CONVERT_TYPE long long
+#define BASE_CONVERT_TYPE long long
 
-    #define IMP_SMALLER_INT_CAST_OP(_type, type_max, type_min)\
-	   inline internalJSONNode::operator _type() const json_nothrow {\
-		  JSON_ASSERT(_value._number > type_min, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT(#_type));\
-		  JSON_ASSERT(_value._number < type_max, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT(#_type));\
-		  JSON_ASSERT(_value._number == (json_number)((_type)(_value._number)), json_string(JSON_TEXT("(")) + json_string(JSON_TEXT(#_type)) + json_string(JSON_TEXT(") will truncate ")) + _string);\
-		  return (_type)static_cast<BASE_CONVERT_TYPE>(*this);\
-	   }
+#define IMP_SMALLER_INT_CAST_OP(_type, type_max, type_min)\
+   inline internalJSONNode::operator _type() const json_nothrow {\
+	  JSON_ASSERT(_value._number > type_min, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT(#_type));\
+	  JSON_ASSERT(_value._number < type_max, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT(#_type));\
+	  JSON_ASSERT(_value._number == (json_number)((_type)(_value._number)), json_string(JSON_TEXT("(")) + json_string(JSON_TEXT(#_type)) + json_string(JSON_TEXT(") will truncate ")) + _string);\
+	  return (_type)static_cast<BASE_CONVERT_TYPE>(*this);\
+   }
 
-    IMP_SMALLER_INT_CAST_OP(char, CHAR_MAX, CHAR_MIN)
-    IMP_SMALLER_INT_CAST_OP(unsigned char, UCHAR_MAX, 0)
-    IMP_SMALLER_INT_CAST_OP(short, SHRT_MAX, SHRT_MIN)
-    IMP_SMALLER_INT_CAST_OP(unsigned short, USHRT_MAX, 0)
-    IMP_SMALLER_INT_CAST_OP(int, INT_MAX, INT_MIN)
-    IMP_SMALLER_INT_CAST_OP(unsigned int, UINT_MAX, 0)
+IMP_SMALLER_INT_CAST_OP(char, CHAR_MAX, CHAR_MIN)
+IMP_SMALLER_INT_CAST_OP(unsigned char, UCHAR_MAX, 0)
+IMP_SMALLER_INT_CAST_OP(short, SHRT_MAX, SHRT_MIN)
+IMP_SMALLER_INT_CAST_OP(unsigned short, USHRT_MAX, 0)
+IMP_SMALLER_INT_CAST_OP(int, INT_MAX, INT_MIN)
+IMP_SMALLER_INT_CAST_OP(unsigned int, UINT_MAX, 0)
 
-    IMP_SMALLER_INT_CAST_OP(long, LONG_MAX, LONG_MIN)
-    IMP_SMALLER_INT_CAST_OP(unsigned long, ULONG_MAX, 0)
-#endif
+IMP_SMALLER_INT_CAST_OP(long, LONG_MAX, LONG_MIN)
+IMP_SMALLER_INT_CAST_OP(unsigned long, ULONG_MAX, 0)
 
 inline internalJSONNode::operator json_string() const json_nothrow {
     Fetch();

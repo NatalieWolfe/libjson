@@ -258,78 +258,52 @@ void internalJSONNode::Set(const json_string & val) json_nothrow {
     SetFetched(true);
 }
 
-#ifdef JSON_LIBRARY
-    void internalJSONNode::Set(json_int_t val) json_nothrow {
-	   makeNotContainer();
-	   _type = JSON_NUMBER;
-	   _value._number = (json_number)val;
-	   #if(defined(JSON_CASTABLE) || !defined(JSON_LESS_MEMORY) || defined(JSON_WRITE_PRIORITY))
-		  _string = NumberToString::_itoa<json_int_t>(val);
-	   #else
-		  clearString(_string);
-	   #endif
-	   SetFetched(true);
-    }
-
-    void internalJSONNode::Set(json_number val) json_nothrow {
-	   makeNotContainer();
-	   _type = JSON_NUMBER;
-	   _value._number = val;
-	   #if(defined(JSON_CASTABLE) || !defined(JSON_LESS_MEMORY) || defined(JSON_WRITE_PRIORITY))
-		  _string = NumberToString::_ftoa(val);
-	   #else
-		  clearString(_string);
-	   #endif
-	   SetFetched(true);
-    }
-#else
-    #if(defined(JSON_CASTABLE) || !defined(JSON_LESS_MEMORY) || defined(JSON_WRITE_PRIORITY))
-	   #define SET(converter, type)\
-		  void internalJSONNode::Set(type val) json_nothrow {\
-			 makeNotContainer();\
-			 _type = JSON_NUMBER;\
-			 _value._number = (json_number)val;\
-			 _string = NumberToString::converter<type>(val);\
-			 SetFetched(true);\
-		  }
-	   #define SET_FLOAT(type) \
-		  void internalJSONNode::Set(type val) json_nothrow {\
-			 makeNotContainer();\
-			 _type = JSON_NUMBER;\
-			 _value._number = (json_number)val;\
-			 _string = NumberToString::_ftoa(_value._number);\
-			 SetFetched(true);\
-		  }
-    #else /*<- else */
-	   #define SET(converter, type)\
-		  void internalJSONNode::Set(type val) json_nothrow {\
-			 makeNotContainer();\
-			 _type = JSON_NUMBER;\
-			 _value._number = (json_number)val;\
-			 clearString(_string);\
-			 SetFetched(true);\
-		  }
-	   #define SET_FLOAT(type) \
-		  void internalJSONNode::Set(type val) json_nothrow {\
-			 makeNotContainer();\
-			 _type = JSON_NUMBER;\
-			 _value._number = (json_number)val;\
-			 clearString(_string);\
-			 SetFetched(true);\
-		  }
-    #endif
-    #define SET_INTEGER(type) SET(_itoa, type) SET(_uitoa, unsigned type)
-
-    SET_INTEGER(char)
-    SET_INTEGER(short)
-    SET_INTEGER(int)
-    SET_INTEGER(long)
-    SET_INTEGER(long long)
-    SET_FLOAT(long double)
-
-    SET_FLOAT(float)
-    SET_FLOAT(double)
+#if(defined(JSON_CASTABLE) || !defined(JSON_LESS_MEMORY) || defined(JSON_WRITE_PRIORITY))
+   #define SET(converter, type)\
+	  void internalJSONNode::Set(type val) json_nothrow {\
+		 makeNotContainer();\
+		 _type = JSON_NUMBER;\
+		 _value._number = (json_number)val;\
+		 _string = NumberToString::converter<type>(val);\
+		 SetFetched(true);\
+	  }
+   #define SET_FLOAT(type) \
+	  void internalJSONNode::Set(type val) json_nothrow {\
+		 makeNotContainer();\
+		 _type = JSON_NUMBER;\
+		 _value._number = (json_number)val;\
+		 _string = NumberToString::_ftoa(_value._number);\
+		 SetFetched(true);\
+	  }
+#else /*<- else */
+   #define SET(converter, type)\
+	  void internalJSONNode::Set(type val) json_nothrow {\
+		 makeNotContainer();\
+		 _type = JSON_NUMBER;\
+		 _value._number = (json_number)val;\
+		 clearString(_string);\
+		 SetFetched(true);\
+	  }
+   #define SET_FLOAT(type) \
+	  void internalJSONNode::Set(type val) json_nothrow {\
+		 makeNotContainer();\
+		 _type = JSON_NUMBER;\
+		 _value._number = (json_number)val;\
+		 clearString(_string);\
+		 SetFetched(true);\
+	  }
 #endif
+#define SET_INTEGER(type) SET(_itoa, type) SET(_uitoa, unsigned type)
+
+SET_INTEGER(char)
+SET_INTEGER(short)
+SET_INTEGER(int)
+SET_INTEGER(long)
+SET_INTEGER(long long)
+SET_FLOAT(long double)
+
+SET_FLOAT(float)
+SET_FLOAT(double)
 
 void internalJSONNode::Set(bool val) json_nothrow {
     makeNotContainer();
@@ -390,20 +364,9 @@ void internalJSONNode::Nullify(void) const json_nothrow {
     #define JSON_MUTEX_COPY
 #endif /*<- */
 
-#ifdef JSON_LIBRARY /*-> JSON_LIBRARY */
-void internalJSONNode::push_back(JSONNode * node) json_nothrow {
-#else /*<- else */
 void internalJSONNode::push_back(const JSONNode & node) json_nothrow {
-#endif /*<- */
     JSON_ASSERT_SAFE(isContainer(), json_global(ERROR_NON_CONTAINER) + JSON_TEXT("push_back"), return;);
-    #ifdef JSON_LIBRARY /*-> JSON_LIBRARY */
-	   #ifdef JSON_MUTEX_CALLBACKS /*-> JSON_MUTEX_CALLBACKS */
-		  if (mylock != 0) node -> set_mutex(mylock);
-	   #endif /*<- */
-	   CHILDREN -> push_back(node);
-    #else /*<- else */
-	   CHILDREN -> push_back(JSONNode::newJSONNode(node   JSON_MUTEX_COPY));
-    #endif /*<- */
+    CHILDREN -> push_back(JSONNode::newJSONNode(node   JSON_MUTEX_COPY));
 }
 
 void internalJSONNode::push_front(const JSONNode & node) json_nothrow {
@@ -508,110 +471,75 @@ internalJSONNode::operator bool() const json_nothrow {
     return _value._bool;
 }
 
-#ifdef JSON_LIBRARY /*-> JSON_LIBRARY */
-    internalJSONNode::operator json_number() const json_nothrow {
-	   Fetch();
-	   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
-		  switch(type()){
-			 case JSON_NULL:
-				return (json_number)0.0;
-			 case JSON_BOOL:
-				return (json_number)(_value._bool ? 1.0 : 0.0);
-			 case JSON_STRING:
-				FetchNumber();
-		  }
-	   #endif /*<- */
-	   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("as_float"));
-	   return (json_number)_value._number;
-    }
+internalJSONNode::operator long double() const json_nothrow {
+   Fetch();
+   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
+	  switch(type()){
+		 case JSON_NULL:
+		     return (long double)0.0;
+		 case JSON_BOOL:
+		     return (long double)(_value._bool ? 1.0 : 0.0);
+		 case JSON_STRING:
+		     FetchNumber();
+	  }
+   #endif /*<- */
+   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("(long double)"));
+   return (long double)_value._number;
+}
 
-    internalJSONNode::operator json_int_t() const json_nothrow {
-	   Fetch();
-	   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
-		  switch(type()){
-			 case JSON_NULL:
-				return 0;
-			 case JSON_BOOL:
-				return _value._bool ? 1 : 0;
-			 case JSON_STRING:
-				FetchNumber();
-		  }
-	   #endif /*<- */
-	   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("as_int"));
-	   JSON_ASSERT(_value._number == (json_number)((json_int_t)_value._number), json_string(JSON_TEXT("as_int will truncate ")) + _string);
-	   return (json_int_t)_value._number;
-    }
-#else /*<- else */
-    internalJSONNode::operator long double() const json_nothrow {
-	   Fetch();
-	   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
-		  switch(type()){
-			 case JSON_NULL:
-			     return (long double)0.0;
-			 case JSON_BOOL:
-			     return (long double)(_value._bool ? 1.0 : 0.0);
-			 case JSON_STRING:
-			     FetchNumber();
-		  }
-	   #endif /*<- */
-	   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("(long double)"));
-	   return (long double)_value._number;
-    }
+//do whichever one is longer, because it's easy to cast down
+internalJSONNode::operator long long() const json_nothrow
+{
+   Fetch();
+   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
+	  switch(type()){
+		 case JSON_NULL:
+			return 0;
+		 case JSON_BOOL:
+			return _value._bool ? 1 : 0;
+		 case JSON_STRING:
+			FetchNumber();
+	  }
+   #endif /*<- */
+   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("(long long)"));
+   #ifdef LONG_LONG_MAX
+	  JSON_ASSERT(_value._number < LONG_LONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("long long"));
+   #elif defined(LLONG_MAX)
+	  JSON_ASSERT(_value._number < LLONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("long long"));
+   #endif
+   #ifdef LONG_LONG_MIN
+	  JSON_ASSERT(_value._number > LONG_LONG_MIN, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT("long long"));
+   #elif defined(LLONG_MAX)
+	  JSON_ASSERT(_value._number > LLONG_MIN, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT("long long"));
+   #endif
 
-    //do whichever one is longer, because it's easy to cast down
-    internalJSONNode::operator long long() const json_nothrow
-    {
-	   Fetch();
-	   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
-		  switch(type()){
-			 case JSON_NULL:
-				return 0;
-			 case JSON_BOOL:
-				return _value._bool ? 1 : 0;
-			 case JSON_STRING:
-				FetchNumber();
-		  }
-	   #endif /*<- */
-	   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("(long long)"));
-	   #ifdef LONG_LONG_MAX
-		  JSON_ASSERT(_value._number < LONG_LONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("long long"));
-	   #elif defined(LLONG_MAX)
-		  JSON_ASSERT(_value._number < LLONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("long long"));
-	   #endif
-	   #ifdef LONG_LONG_MIN
-		  JSON_ASSERT(_value._number > LONG_LONG_MIN, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT("long long"));
-	   #elif defined(LLONG_MAX)
-		  JSON_ASSERT(_value._number > LLONG_MIN, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT("long long"));
-	   #endif
+   JSON_ASSERT(_value._number == (json_number)((long long)_value._number), json_string(JSON_TEXT("(long long) will truncate ")) + _string);
+   return (long long)_value._number;
+}
 
-	   JSON_ASSERT(_value._number == (json_number)((long long)_value._number), json_string(JSON_TEXT("(long long) will truncate ")) + _string);
-	   return (long long)_value._number;
-    }
-
-    internalJSONNode::operator unsigned long long() const json_nothrow
-    {
-	   Fetch();
-	   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
-		  switch(type()){
-			 case JSON_NULL:
-				return 0;
-			 case JSON_BOOL:
-				return _value._bool ? 1 : 0;
-			 case JSON_STRING:
-				FetchNumber();
-		  }
-	   #endif /*<- */
-	   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("(unsigned long long)"));
-	   JSON_ASSERT(_value._number > 0, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT("unsigned long long"));
-	   #ifdef ULONG_LONG_MAX
-		  JSON_ASSERT(_value._number < ULONG_LONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("unsigned long long"));
-	   #elif defined(ULLONG_MAX)
-		  JSON_ASSERT(_value._number < ULLONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("unsigned long long"));
-	   #endif
-	   JSON_ASSERT(_value._number == (json_number)((unsigned long long)_value._number), json_string(JSON_TEXT("(unsigned long long) will truncate ")) + _string);
-	   return (unsigned long long)_value._number;
-    }
-#endif /*<- */
+internalJSONNode::operator unsigned long long() const json_nothrow
+{
+   Fetch();
+   #ifdef JSON_CASTABLE /*-> JSON_CASTABLE */
+	  switch(type()){
+		 case JSON_NULL:
+			return 0;
+		 case JSON_BOOL:
+			return _value._bool ? 1 : 0;
+		 case JSON_STRING:
+			FetchNumber();
+	  }
+   #endif /*<- */
+   JSON_ASSERT(type() == JSON_NUMBER, json_global(ERROR_UNDEFINED) + JSON_TEXT("(unsigned long long)"));
+   JSON_ASSERT(_value._number > 0, _string + json_global(ERROR_LOWER_RANGE) + JSON_TEXT("unsigned long long"));
+   #ifdef ULONG_LONG_MAX
+	  JSON_ASSERT(_value._number < ULONG_LONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("unsigned long long"));
+   #elif defined(ULLONG_MAX)
+	  JSON_ASSERT(_value._number < ULLONG_MAX, _string + json_global(ERROR_UPPER_RANGE) + JSON_TEXT("unsigned long long"));
+   #endif
+   JSON_ASSERT(_value._number == (json_number)((unsigned long long)_value._number), json_string(JSON_TEXT("(unsigned long long) will truncate ")) + _string);
+   return (unsigned long long)_value._number;
+}
 
 	/*
 	 These functions are to allow allocation to be completely controlled by the callbacks
@@ -685,107 +613,105 @@ internalJSONNode * internalJSONNode::newInternal(const internalJSONNode & orig) 
 }
 
 #ifdef JSON_DEBUG /*-> JSON_MEMORY_POOL */
-    #ifndef JSON_LIBRARY /*-> JSON_MEMORY_POOL */
-	   JSONNode internalJSONNode::Dump(size_t & totalbytes) const json_nothrow {
-		  JSONNode dumpage(JSON_NODE);
-		  dumpage.set_name(JSON_TEXT("internalJSONNode"));
-		  dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("this"), (long)this)));
+    JSONNode internalJSONNode::Dump(size_t & totalbytes) const json_nothrow {
+	   JSONNode dumpage(JSON_NODE);
+	   dumpage.set_name(JSON_TEXT("internalJSONNode"));
+	   dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("this"), (long)this)));
 
-		  START_MEM_SCOPE
-			 size_t memory = sizeof(internalJSONNode);
-			 memory += _name.capacity() * sizeof(json_char);
-			 memory += _string.capacity() * sizeof(json_char);
-			 if (isContainer()){
-				memory += sizeof(jsonChildren);
-				memory += CHILDREN -> capacity() * sizeof(JSONNode*);
-			 }
-			 #ifdef JSON_COMMENTS /*-> JSON_COMMENTS */
-				memory += _comment.capacity() * sizeof(json_char);
-			 #endif /*<- */
-			 totalbytes += memory;
-			 dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("bytes used"), memory)));
-		  END_MEM_SCOPE
-
-
-		  #ifdef JSON_REF_COUNT /*-> JSON_REF_COUNT */
-			 dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("refcount"), refcount)));
-		  #endif /*<- */
-		  #ifdef JSON_MUTEX_CALLBACKS /*-> JSON_MUTEX_CALLBACKS */
-			 dumpage.push_back(JSON_NEW(DumpMutex()));
-		  #endif /*<- */
-
-
-		  #define DUMPCASE(ty)\
-			 case ty:\
-				dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_type"), JSON_TEXT(#ty))));\
-				break;
-
-		  switch(type()){
-			 DUMPCASE(JSON_NULL)
-			 DUMPCASE(JSON_STRING)
-			 DUMPCASE(JSON_NUMBER)
-			 DUMPCASE(JSON_BOOL)
-			 DUMPCASE(JSON_ARRAY)
-			 DUMPCASE(JSON_NODE)
-			 default:
-				dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_type"), JSON_TEXT("Unknown"))));
-		  }
-
-		  JSONNode str(JSON_NODE);
-		  str.set_name(JSON_TEXT("_name"));
-		  str.push_back(JSON_NEW(JSONNode(json_string(JSON_TEXT("value")), _name)));
-		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("length"), _name.length())));
-		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("capactiy"), _name.capacity())));
-
-		  dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_name_encoded"), _name_encoded)));
-		  dumpage.push_back(JSON_NEW(str));
-		  dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_string_encoded"), _string_encoded)));
-		  str.clear();
-		  str.set_name(JSON_TEXT("_string"));
-		  str.push_back(JSON_NEW(JSONNode(json_string(JSON_TEXT("value")), _string)));
-		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("length"), _string.length())));
-		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("capactiy"), _string.capacity())));
-		  dumpage.push_back(JSON_NEW(str));
-
-		  if ((type() == JSON_BOOL) || (type() == JSON_NUMBER)){
-			 JSONNode unio(JSON_NODE);
-			 unio.set_name(JSON_TEXT("_value"));
-			 if (type() == JSON_BOOL){
-				unio.push_back(JSON_NEW(JSONNode(JSON_TEXT("_bool"), _value._bool)));
-			 } else if (type() == JSON_NUMBER){
-				unio.push_back(JSON_NEW(JSONNode(JSON_TEXT("_number"), _value._number)));
-			 }
-			 dumpage.push_back(JSON_NEW(unio));
-		  }
-
-		  #if !defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY) /*-> !JSON_PREPARSE && JSON_READ_PRIORITY */
-			 dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("fetched"), fetched)));
-		  #endif /*<- */
-
-		  #ifdef JSON_COMMENTS /*-> JSON_COMMENTS */
-			 str.clear();
-			 str.set_name(JSON_TEXT("_comment"));
-			 str.push_back(JSON_NEW(JSONNode(JSON_TEXT("value"), _comment)));
-			 str.push_back(JSON_NEW(JSONNode(JSON_TEXT("length"), _comment.length())));
-			 str.push_back(JSON_NEW(JSONNode(JSON_TEXT("capactiy"), _comment.capacity())));
-			 dumpage.push_back(JSON_NEW(str));
-		  #endif /*<- */
-
+	   START_MEM_SCOPE
+		  size_t memory = sizeof(internalJSONNode);
+		  memory += _name.capacity() * sizeof(json_char);
+		  memory += _string.capacity() * sizeof(json_char);
 		  if (isContainer()){
-			 JSONNode arra(JSON_NODE);
-			 arra.set_name(JSON_TEXT("Children"));
-			 arra.push_back(JSON_NEW(JSONNode(JSON_TEXT("size"), CHILDREN -> size())));
-			 arra.push_back(JSON_NEW(JSONNode(JSON_TEXT("capacity"), CHILDREN -> capacity())));
-			 JSONNode chil(JSON_ARRAY);
-			 chil.set_name(JSON_TEXT("array"));
-			 json_foreach(CHILDREN, it){
-				chil.push_back(JSON_NEW((*it) -> dump(totalbytes)));
-			 }
-			 arra.push_back(JSON_NEW(chil));
-			 dumpage.push_back(JSON_NEW(arra));
+			 memory += sizeof(jsonChildren);
+			 memory += CHILDREN -> capacity() * sizeof(JSONNode*);
 		  }
+		  #ifdef JSON_COMMENTS /*-> JSON_COMMENTS */
+			 memory += _comment.capacity() * sizeof(json_char);
+		  #endif /*<- */
+		  totalbytes += memory;
+		  dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("bytes used"), memory)));
+	   END_MEM_SCOPE
 
-		  return dumpage;
+
+	   #ifdef JSON_REF_COUNT /*-> JSON_REF_COUNT */
+		  dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("refcount"), refcount)));
+	   #endif /*<- */
+	   #ifdef JSON_MUTEX_CALLBACKS /*-> JSON_MUTEX_CALLBACKS */
+		  dumpage.push_back(JSON_NEW(DumpMutex()));
+	   #endif /*<- */
+
+
+	   #define DUMPCASE(ty)\
+		  case ty:\
+			 dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_type"), JSON_TEXT(#ty))));\
+			 break;
+
+	   switch(type()){
+		  DUMPCASE(JSON_NULL)
+		  DUMPCASE(JSON_STRING)
+		  DUMPCASE(JSON_NUMBER)
+		  DUMPCASE(JSON_BOOL)
+		  DUMPCASE(JSON_ARRAY)
+		  DUMPCASE(JSON_NODE)
+		  default:
+			 dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_type"), JSON_TEXT("Unknown"))));
 	   }
-    #endif /*<- */
+
+	   JSONNode str(JSON_NODE);
+	   str.set_name(JSON_TEXT("_name"));
+	   str.push_back(JSON_NEW(JSONNode(json_string(JSON_TEXT("value")), _name)));
+	   str.push_back(JSON_NEW(JSONNode(JSON_TEXT("length"), _name.length())));
+	   str.push_back(JSON_NEW(JSONNode(JSON_TEXT("capactiy"), _name.capacity())));
+
+	   dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_name_encoded"), _name_encoded)));
+	   dumpage.push_back(JSON_NEW(str));
+	   dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("_string_encoded"), _string_encoded)));
+	   str.clear();
+	   str.set_name(JSON_TEXT("_string"));
+	   str.push_back(JSON_NEW(JSONNode(json_string(JSON_TEXT("value")), _string)));
+	   str.push_back(JSON_NEW(JSONNode(JSON_TEXT("length"), _string.length())));
+	   str.push_back(JSON_NEW(JSONNode(JSON_TEXT("capactiy"), _string.capacity())));
+	   dumpage.push_back(JSON_NEW(str));
+
+	   if ((type() == JSON_BOOL) || (type() == JSON_NUMBER)){
+		  JSONNode unio(JSON_NODE);
+		  unio.set_name(JSON_TEXT("_value"));
+		  if (type() == JSON_BOOL){
+			 unio.push_back(JSON_NEW(JSONNode(JSON_TEXT("_bool"), _value._bool)));
+		  } else if (type() == JSON_NUMBER){
+			 unio.push_back(JSON_NEW(JSONNode(JSON_TEXT("_number"), _value._number)));
+		  }
+		  dumpage.push_back(JSON_NEW(unio));
+	   }
+
+	   #if !defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY) /*-> !JSON_PREPARSE && JSON_READ_PRIORITY */
+		  dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("fetched"), fetched)));
+	   #endif /*<- */
+
+	   #ifdef JSON_COMMENTS /*-> JSON_COMMENTS */
+		  str.clear();
+		  str.set_name(JSON_TEXT("_comment"));
+		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("value"), _comment)));
+		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("length"), _comment.length())));
+		  str.push_back(JSON_NEW(JSONNode(JSON_TEXT("capactiy"), _comment.capacity())));
+		  dumpage.push_back(JSON_NEW(str));
+	   #endif /*<- */
+
+	   if (isContainer()){
+		  JSONNode arra(JSON_NODE);
+		  arra.set_name(JSON_TEXT("Children"));
+		  arra.push_back(JSON_NEW(JSONNode(JSON_TEXT("size"), CHILDREN -> size())));
+		  arra.push_back(JSON_NEW(JSONNode(JSON_TEXT("capacity"), CHILDREN -> capacity())));
+		  JSONNode chil(JSON_ARRAY);
+		  chil.set_name(JSON_TEXT("array"));
+		  json_foreach(CHILDREN, it){
+			 chil.push_back(JSON_NEW((*it) -> dump(totalbytes)));
+		  }
+		  arra.push_back(JSON_NEW(chil));
+		  dumpage.push_back(JSON_NEW(arra));
+	   }
+
+	   return dumpage;
+    }
 #endif /*<- */

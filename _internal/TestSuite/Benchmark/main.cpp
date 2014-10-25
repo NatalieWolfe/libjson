@@ -14,10 +14,6 @@
 
 using namespace std;
 
-#ifndef JSON_LIBRARY
-#error, JSON_LIBRARY not on
-#endif
-
 #ifdef JSON_STRICT
 #error, JSON_STRICT on
 #endif

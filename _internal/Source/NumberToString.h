@@ -83,42 +83,36 @@ public:
 	   return json_string(runner + 1);
     }
 
-    #ifndef JSON_LIBRARY
-	   template<typename T>
-	   static json_string _uitoa(T val) json_nothrow {
-		  #ifdef JSON_LESS_MEMORY
-			 json_auto<json_char> s(getLenSize<sizeof(T)>::GETLEN);
-		  #else
-			 json_char num_str_result[getLenSize<sizeof(T)>::GETLEN];
-		  #endif
-		  num_str_result[getLenSize<sizeof(T)>::GETLEN - 1] = JSON_TEXT('\0'); //null terminator
-		  json_char * runner = &num_str_result[getLenSize<sizeof(T)>::GETLEN - 2];
+    template<typename T>
+    static json_string _uitoa(T val) json_nothrow {
+	   #ifdef JSON_LESS_MEMORY
+		  json_auto<json_char> s(getLenSize<sizeof(T)>::GETLEN);
+	   #else
+		  json_char num_str_result[getLenSize<sizeof(T)>::GETLEN];
+	   #endif
+	   num_str_result[getLenSize<sizeof(T)>::GETLEN - 1] = JSON_TEXT('\0'); //null terminator
+	   json_char * runner = &num_str_result[getLenSize<sizeof(T)>::GETLEN - 2];
 
-		  //create the string
-		  START_MEM_SCOPE
-			 unsigned long value = (unsigned long)val;
-			 do {
-				*runner-- = (json_char)(value % 10) + JSON_TEXT('0');
-			 } while(value /= 10);
-		  END_MEM_SCOPE
+	   //create the string
+	   START_MEM_SCOPE
+		  unsigned long value = (unsigned long)val;
+		  do {
+			 *runner-- = (json_char)(value % 10) + JSON_TEXT('0');
+		  } while(value /= 10);
+	   END_MEM_SCOPE
 
-		  return json_string(runner + 1);
-	   }
-    #endif
+	   return json_string(runner + 1);
+    }
 
     #define EXTRA_LONG long
     #define FLOAT_STRING "%Lf"
     #define LFLOAT_STRING L"%Lf"
 
     static json_string _ftoa(json_number value) json_nothrow {
-	   #ifndef JSON_LIBRARY
 			//ScopeCoverage(_ftoa_coverage, 6);
 		  if (json_unlikely(value >= 0.0 && _floatsAreEqual(value, (json_number)((unsigned EXTRA_LONG long)value)))){
 			 return _uitoa<unsigned EXTRA_LONG long>((unsigned EXTRA_LONG long)value);
 		  } else
-		#else
-			  //ScopeCoverage(_ftoa_coverage, 5);
-	   #endif
 		  if (json_unlikely(_floatsAreEqual(value, (json_number)((long EXTRA_LONG)value)))){
 			 return _itoa<long EXTRA_LONG>((long EXTRA_LONG)value);
 		  }
