@@ -20,30 +20,30 @@ Roadmap
 1. [x] Remove all code for C library.
 2. [x] Remove all ISO strict code.
 3. [ ] Clean and document files:
-  - [ ] libjson.h
-  - [ ] JSONOptions.h
-  - [ ] JSONNode.h
-  - [ ] JSONNode.cpp
-  - [ ] internalJSONNode.h
-  - [ ] internalJSONNode.cpp
-  - [ ] ...
-  - [ ] (dependency) libbase64++.h
-  - [ ] (dependency) mempool.h
+    - [ ] libjson.h
+    - [ ] JSONOptions.h
+    - [ ] JSONNode.h
+    - [ ] JSONNode.cpp
+    - [ ] internalJSONNode.h
+    - [ ] internalJSONNode.cpp
+    - [ ] ...
+    - [ ] (dependency) libbase64++.h
+    - [ ] (dependency) mempool.h
 4. [ ] Convert build to gyp
 5. [ ] Convert tests to Google Test
 6. [ ] Move everything inside the namespace "json"
 7. [ ] Add move constructors to classes:
-  - [ ] JSONNode
-  - [ ] internalJSONNode
-  - [ ] ...
+    - [ ] JSONNode
+    - [ ] internalJSONNode
+    - [ ] ...
 8. [ ] Add initialization_vector support to classes:
-  - [ ] JSONNode
+    - [ ] JSONNode
 9. [ ] Update callbacks to use `std::function`
-  - [ ] Debug callbacks
-  - [ ] Stream callbacks
-  - [ ] Mutex callbacks
-  - [ ] Memory callbacks
-
+    - [ ] Debug callbacks
+    - [ ] Stream callbacks
+    - [ ] Mutex callbacks
+    - [ ] Memory callbacks
+10. [ ] Make mutexes compatible with `std::mutex`
 
 Cleaning Checklist
 ------------------
