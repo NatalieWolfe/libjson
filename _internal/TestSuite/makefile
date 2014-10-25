@@ -21,7 +21,7 @@ single:
 	../Source/JSONIterators.cpp ../Source/JSONMemory.cpp \
 	../Source/JSONNode_Mutex.cpp ../Source/JSONNode.cpp \
 	../Source/JSONWorker.cpp ../Source/JSONWriter.cpp \
-	../Source/libjson.cpp ../Source/JSONValidator.cpp \
+	../Source/JSONValidator.cpp \
 	../Source/JSONStream.cpp ../Source/JSONAllocator.cpp \
     	../Source/JSONPreparse.cpp \
 	../TestSuite2/JSON_Base64/json_decode64.cpp \
@@ -63,7 +63,7 @@ debug:
 	../Source/JSONIterators.cpp ../Source/JSONMemory.cpp \
 	../Source/JSONNode_Mutex.cpp ../Source/JSONNode.cpp \
 	../Source/JSONWorker.cpp ../Source/JSONWriter.cpp \
-	../Source/libjson.cpp ../Source/JSONValidator.cpp \
+	../Source/JSONValidator.cpp \
 	../Source/JSONStream.cpp ../Source/JSONAllocator.cpp \
     	../Source/JSONPreparse.cpp \
 	../TestSuite2/JSON_Base64/json_decode64.cpp \
@@ -105,7 +105,7 @@ small:
 	../Source/JSONIterators.cpp ../Source/JSONMemory.cpp \
 	../Source/JSONNode_Mutex.cpp ../Source/JSONNode.cpp \
 	../Source/JSONWorker.cpp ../Source/JSONWriter.cpp \
-	../Source/libjson.cpp ../Source/JSONValidator.cpp \
+	../Source/JSONValidator.cpp \
 	../Source/JSONStream.cpp ../Source/JSONAllocator.cpp \
     	../Source/JSONPreparse.cpp \
 	../TestSuite2/JSON_Base64/json_decode64.cpp \
