@@ -20,7 +20,7 @@ Roadmap
 1. [x] Remove all code for C library.
 2. [x] Remove all ISO strict code.
 3. [ ] Clean and document files:
-    - [ ] libjson.h
+    - [x] libjson.h
     - [ ] JSONOptions.h
     - [ ] JSONNode.h
     - [ ] JSONNode.cpp
