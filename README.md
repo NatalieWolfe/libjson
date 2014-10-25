@@ -16,8 +16,8 @@ Roadmap
 -------
 
 1. [x] Remove all code for C library.
-1. [ ] Remove all ISO strict code.
-2. [ ] Clean and document files:
+2. [ ] Remove all ISO strict code.
+3. [ ] Clean and document files:
   - [ ] libjson.h
   - [ ] JSONOptions.h
   - [ ] JSONNode.h
@@ -27,10 +27,12 @@ Roadmap
   - [ ] ...
   - [ ] (dependency) libbase64++.h
   - [ ] (dependency) mempool.h
-3. [ ] Move everything inside the namespace "json"
-4. [ ] Add move constructors to classes:
+4. [ ] Convert build to gyp
+5. [ ] Convert tests to Google Test
+6. [ ] Move everything inside the namespace "json"
+7. [ ] Add move constructors to classes:
   - [ ] JSONNode
   - [ ] internalJSONNode
   - [ ] ...
-5. [ ] Add initialization_vector support to classes:
+8. [ ] Add initialization_vector support to classes:
   - [ ] JSONNode
