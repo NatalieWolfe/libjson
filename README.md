@@ -22,7 +22,7 @@ Roadmap
 2. [x] Remove all ISO strict code.
 3. [ ] Clean and document files:
     - [x] libjson.h
-    - [ ] JSONOptions.h
+    - [x] JSONOptions.h
     - [ ] JSONNode.h
     - [ ] JSONNode.cpp
     - [ ] internalJSONNode.h
