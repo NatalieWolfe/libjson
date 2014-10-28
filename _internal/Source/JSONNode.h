@@ -94,22 +94,67 @@
 */
 
 /**
- * @brief
+ * @brief The primary interface to libjson.
+ *
+ * All JSON values are `JSONNode`s. This class largely acts as a wrapper to `internalJSONNode` and
+ * handles all error checks and higher-level memory management (i.e. reference counting).
  */
 class JSONNode {
 public:
+    // Stats information for debugging.
     LIBJSON_OBJECT(JSONNode);
+
+    /**
+     * @brief Typed default constructor.
+     *
+     * Creates a new `JSONNode` with no name and no value with the given type.
+     *
+     * @param mytype The node type to create (i.e. `JSON_NULL`, `JSON_STRING`, `JSON_NUMBER`, etc).
+     */
     explicit JSONNode(char mytype = JSON_NODE) json_nothrow json_hot;
-    #define DECLARE_CTOR(type) explicit JSONNode(const json_string & name_t, type value_t)
+
+    /**
+     * @brief Name/value pair constructors.
+     *
+     * @param name_t    The name for the node.
+     * @param value_t   The value for the node.
+     */
+#   define DECLARE_CTOR(type) explicit JSONNode(const json_string & name_t, type value_t)
     DECLARE_FOR_ALL_TYPES(DECLARE_CTOR)
 
+    /**
+     * @brief Copy constructor.
+     *
+     * The copy is a lazy copy. No data is actually copied over until the value is altered.
+     *
+     * @param orig The JSONNode to copy.
+     */
     JSONNode(const JSONNode & orig) json_nothrow json_hot;
+
+    /**
+     * @brief Destructor.
+     */
     ~JSONNode(void) json_nothrow json_hot;
 
-    #if (defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY))
+#   if defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY)
+        /**
+         * @brief Creates a `JSON_STRING` object from the given, potentially encoded string.
+         *
+         * The provided string will be decoded as if it were a string value in a JSON object.
+         *
+         * @param str The string that will be the new node's value.
+         *
+         * @return A `JSONNode` containing the decoded string.
+         */
         static JSONNode stringType(const json_string & str);
+
+        /**
+         * @brief Sets the name of the `JSONNode` to the given JSON-escaped string.
+         *
+         * @param newname The JSON-escaped string to use as the new node name.
+         */
         void set_name_(const json_string & newname) json_nothrow json_write_priority;
-    #endif
+#   endif
 
     json_index_t size(void) const json_nothrow json_read_priority;
     bool empty(void) const json_nothrow json_read_priority;
