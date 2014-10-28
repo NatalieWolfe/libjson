@@ -1,5 +1,4 @@
-#ifndef JSONNODE_H
-#define JSONNODE_H
+#pragma once
 
 #include "JSONDebug.h"   //for string type
 #include "internalJSONNode.h"  //internal structure for json value
@@ -7,81 +6,85 @@
 #include <cstdarg>  //for the ... parameter
 
 #ifdef JSON_BINARY
-    #include "JSON_Base64.h"
+#   include "JSON_Base64.h"
 #endif
 
 #ifdef JSON_LESS_MEMORY
-    #ifdef __GNUC__
-       #pragma pack(push, 1)
-    #elif _MSC_VER
-       #pragma pack(push, JSONNode_pack, 1)
-    #endif
+#   ifdef __GNUC__
+#       pragma pack(push, 1)
+#   elif _MSC_VER
+#       pragma pack(push, JSONNode_pack, 1)
+#   endif
 #endif
 
 #ifndef JSON_REF_COUNT
-    #define makeUniqueInternal() (void)0
+#   define makeUniqueInternal() (void)0
 #endif
 
 #define JSON_CHECK_INTERNAL() JSON_ASSERT(internal != 0, JSON_TEXT("no internal"))
 
 #ifdef JSON_MUTEX_CALLBACKS
-    #define JSON_MUTEX_COPY_DECL ,void * parentMutex
-    #define JSON_MUTEX_COPY_DECL2 ,void * parentMutex = 0
+#   define JSON_MUTEX_COPY_DECL     ,void * parentMutex
+#   define JSON_MUTEX_COPY_DECL2    ,void * parentMutex = 0
 #else
-    #define JSON_MUTEX_COPY_DECL
-    #define JSON_MUTEX_COPY_DECL2
+#   define JSON_MUTEX_COPY_DECL
+#   define JSON_MUTEX_COPY_DECL2
 #endif
 
-#define JSON_PTR_LIB
-#define JSON_NEW(x) x
+#define DECLARE_FOR_LONG_LONG(foo)          \
+    foo(long long) json_nothrow;            \
+    foo(unsigned long long) json_nothrow;
 
-#define DECLARE_FOR_LONG_LONG(foo) foo(long long) json_nothrow; foo(unsigned long long) json_nothrow;
-#define DECLARE_FOR_LONG_LONG_CONST(foo) foo(long long) const json_nothrow; foo(unsigned long long) const json_nothrow;
-#define IMPLEMENT_FOR_LONG_LONG(foo) foo(long long) foo(unsigned long long)
-#define DECLARE_FOR_LONG_DOUBLE(foo) foo(long double) json_nothrow;
-#define DECLARE_FOR_LONG_DOUBLE_CONST(foo) foo(long double) const json_nothrow;
-#define IMPLEMENT_FOR_LONG_DOUBLE(foo) foo(long double)
+#define DECLARE_FOR_LONG_LONG_CONST(foo)        \
+    foo(long long) const json_nothrow;          \
+    foo(unsigned long long) const json_nothrow;
 
-#define DECLARE_FOR_ALL_TYPES(foo)\
-   foo(char) json_nothrow;     foo(unsigned char) json_nothrow;\
-   foo(short) json_nothrow;     foo(unsigned short) json_nothrow;\
-   foo(int) json_nothrow;     foo(unsigned int) json_nothrow;\
-   foo(long) json_nothrow;     foo(unsigned long) json_nothrow;\
-   foo(float) json_nothrow;     foo(double) json_nothrow;\
-   foo(bool) json_nothrow;\
-   foo(const json_string &) json_nothrow;\
-   foo(const json_char *) json_nothrow;\
-   DECLARE_FOR_LONG_LONG(foo)\
-   DECLARE_FOR_LONG_DOUBLE(foo)
+#define DECLARE_FOR_LONG_DOUBLE(foo)        foo(long double) json_nothrow;
+#define DECLARE_FOR_LONG_DOUBLE_CONST(foo)  foo(long double) const json_nothrow;
 
-#define DECLARE_FOR_ALL_CAST_TYPES_CONST(foo)\
-   foo(char) const json_nothrow;    foo(unsigned char) const json_nothrow;\
-   foo(short) const json_nothrow;    foo(unsigned short) const json_nothrow;\
-   foo(int) const json_nothrow;    foo(unsigned int) const json_nothrow;\
-   foo(long) const json_nothrow;    foo(unsigned long) const json_nothrow;\
-   foo(float) const json_nothrow;    foo(double) const json_nothrow;\
-   foo(bool) const json_nothrow;\
-   foo(const json_string &) const json_nothrow;\
-   DECLARE_FOR_LONG_LONG_CONST(foo)\
-   DECLARE_FOR_LONG_DOUBLE_CONST(foo)
+#define IMPLEMENT_FOR_LONG_LONG(foo)        foo(long long) foo(unsigned long long)
+#define IMPLEMENT_FOR_LONG_DOUBLE(foo)      foo(long double)
 
-#define DECLARE_FOR_ALL_TYPES_CONST(foo)\
-   DECLARE_FOR_ALL_CAST_TYPES_CONST(foo)\
-   foo(const JSONNode &) const json_nothrow;\
-   foo(const json_char *) const json_nothrow;
+#define DECLARE_FOR_ALL_TYPES(foo)                                  \
+    foo(char) json_nothrow;     foo(unsigned char) json_nothrow;    \
+    foo(short) json_nothrow;    foo(unsigned short) json_nothrow;   \
+    foo(int) json_nothrow;      foo(unsigned int) json_nothrow;     \
+    foo(long) json_nothrow;     foo(unsigned long) json_nothrow;    \
+    foo(float) json_nothrow;    foo(double) json_nothrow;           \
+    foo(bool) json_nothrow;                                         \
+    foo(const json_string &) json_nothrow;                          \
+    foo(const json_char *) json_nothrow;                            \
+    DECLARE_FOR_LONG_LONG(foo)                                      \
+    DECLARE_FOR_LONG_DOUBLE(foo)
 
-#define IMPLEMENT_FOR_ALL_NUMBERS(foo)\
-   foo(char) foo(unsigned char)\
-   foo(short) foo(unsigned short)\
-   foo(int) foo(unsigned int)\
-   foo(long) foo(unsigned long)\
-   foo(float) foo(double)\
-   IMPLEMENT_FOR_LONG_LONG(foo)\
-   IMPLEMENT_FOR_LONG_DOUBLE(foo)
+#define DECLARE_FOR_ALL_CAST_TYPES_CONST(foo)                               \
+    foo(char) const json_nothrow;   foo(unsigned char) const json_nothrow;  \
+    foo(short) const json_nothrow;  foo(unsigned short) const json_nothrow; \
+    foo(int) const json_nothrow;    foo(unsigned int) const json_nothrow;   \
+    foo(long) const json_nothrow;   foo(unsigned long) const json_nothrow;  \
+    foo(float) const json_nothrow;  foo(double) const json_nothrow;         \
+    foo(bool) const json_nothrow;                                           \
+    foo(const json_string &) const json_nothrow;                            \
+    DECLARE_FOR_LONG_LONG_CONST(foo)                                        \
+    DECLARE_FOR_LONG_DOUBLE_CONST(foo)
 
-#define IMPLEMENT_FOR_ALL_TYPES(foo)\
-    IMPLEMENT_FOR_ALL_NUMBERS(foo)\
-    foo(const json_string &)\
+#define DECLARE_FOR_ALL_TYPES_CONST(foo)        \
+    DECLARE_FOR_ALL_CAST_TYPES_CONST(foo)       \
+    foo(const JSONNode &) const json_nothrow;   \
+    foo(const json_char *) const json_nothrow;
+
+#define IMPLEMENT_FOR_ALL_NUMBERS(foo)  \
+    foo(char)   foo(unsigned char)      \
+    foo(short)  foo(unsigned short)     \
+    foo(int)    foo(unsigned int)       \
+    foo(long)   foo(unsigned long)      \
+    foo(float)  foo(double)             \
+    IMPLEMENT_FOR_LONG_LONG(foo)        \
+    IMPLEMENT_FOR_LONG_DOUBLE(foo)
+
+#define IMPLEMENT_FOR_ALL_TYPES(foo)    \
+    IMPLEMENT_FOR_ALL_NUMBERS(foo)      \
+    foo(const json_string &)            \
     foo(bool)
 
 /*
@@ -90,7 +93,9 @@
     for argument checking and throwing exceptions if needed.
 */
 
-
+/**
+ * @brief
+ */
 class JSONNode {
 public:
     LIBJSON_OBJECT(JSONNode);
@@ -155,10 +160,10 @@ public:
 
     void push_back(const JSONNode & node) json_nothrow;
     void reserve(json_index_t siz) json_nothrow;
-    JSONNode JSON_PTR_LIB pop_back(json_index_t pos) json_throws(std::out_of_range);
-    JSONNode JSON_PTR_LIB pop_back(const json_string & name_t) json_throws(std::out_of_range);
+    JSONNode pop_back(json_index_t pos) json_throws(std::out_of_range);
+    JSONNode pop_back(const json_string & name_t) json_throws(std::out_of_range);
     #ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
-       JSONNode JSON_PTR_LIB pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range);
+       JSONNode pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range);
     #endif
 
     DECLARE_FOR_ALL_TYPES(JSONNode & operator =)
@@ -887,21 +892,21 @@ inline void JSONNode::decRef(void) json_nothrow { //decrements internal's counte
     inline JSONNode JSONNode::dump(void) const json_nothrow {
        JSON_CHECK_INTERNAL();
        JSONNode dumpage(JSON_NODE);
-       dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("this"), (long)this)));
+       dumpage.push_back(JSONNode(JSON_TEXT("this"), (long)this));
        size_t total = 0;
        JSONNode node(internal -> Dump(total));
-       dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("total bytes used"), total)));
-       dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("bytes used"), sizeof(JSONNode))));
-       dumpage.push_back(JSON_NEW(node));
+       dumpage.push_back(JSONNode(JSON_TEXT("total bytes used"), total));
+       dumpage.push_back(JSONNode(JSON_TEXT("bytes used"), sizeof(JSONNode)));
+       dumpage.push_back(node);
        return dumpage;
     }
 
     inline JSONNode JSONNode::dump(size_t & totalmemory) json_nothrow {
        JSON_CHECK_INTERNAL();
        JSONNode dumpage(JSON_NODE);
-       dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("this"), (long)this)));
-       dumpage.push_back(JSON_NEW(JSONNode(JSON_TEXT("bytes used"), sizeof(JSONNode))));
-       dumpage.push_back(JSON_NEW(internal -> Dump(totalmemory)));
+       dumpage.push_back(JSONNode(JSON_TEXT("this"), (long)this));
+       dumpage.push_back(JSONNode(JSON_TEXT("bytes used"), sizeof(JSONNode)));
+       dumpage.push_back(internal -> Dump(totalmemory));
        return dumpage;
     }
 #endif
@@ -912,5 +917,4 @@ inline void JSONNode::decRef(void) json_nothrow { //decrements internal's counte
     #elif _MSC_VER
        #pragma pack(pop, JSONNode_pack)
     #endif
-#endif
 #endif

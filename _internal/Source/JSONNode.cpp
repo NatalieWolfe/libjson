@@ -244,7 +244,7 @@ struct auto_delete {
 	  auto_delete & operator = (const auto_delete &);
 };
 
-JSONNode JSON_PTR_LIB JSONNode::pop_back(json_index_t pos) json_throws(std::out_of_range) {
+JSONNode JSONNode::pop_back(json_index_t pos) json_throws(std::out_of_range) {
     JSON_CHECK_INTERNAL();
     if (json_unlikely(pos >= internal -> size())){
 	   JSON_FAIL(JSON_TEXT("pop_back out of bounds"));
@@ -255,7 +255,7 @@ JSONNode JSON_PTR_LIB JSONNode::pop_back(json_index_t pos) json_throws(std::out_
     return *temp.mynode;
 }
 
-JSONNode JSON_PTR_LIB JSONNode::pop_back(const json_string & name_t) json_throws(std::out_of_range) {
+JSONNode JSONNode::pop_back(const json_string & name_t) json_throws(std::out_of_range) {
     JSON_CHECK_INTERNAL();
     JSON_ASSERT(type() == JSON_NODE, json_global(ERROR_NON_ITERATABLE) + JSON_TEXT("pop_back"));
     if (JSONNode * res = internal -> pop_back(name_t)){
@@ -267,7 +267,7 @@ JSONNode JSON_PTR_LIB JSONNode::pop_back(const json_string & name_t) json_throws
 }
 
 #ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
-    JSONNode JSON_PTR_LIB JSONNode::pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range) {
+    JSONNode JSONNode::pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range) {
 	   JSON_CHECK_INTERNAL();
 	   JSON_ASSERT(type() == JSON_NODE, json_global(ERROR_NON_ITERATABLE) + JSON_TEXT("pop_back_no_case"));
         if (JSONNode * res = internal -> pop_back_nocase(name_t)){
