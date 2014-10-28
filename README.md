@@ -23,10 +23,8 @@ Roadmap
 3. [ ] Clean and document files:
     - [x] libjson.h
     - [x] JSONOptions.h
-    - [ ] JSONNode.h
-    - [ ] JSONNode.cpp
-    - [ ] internalJSONNode.h
-    - [ ] internalJSONNode.cpp
+    - [ ] JSONNode.h/.cpp
+    - [ ] internalJSONNode.h/.cpp
     - [ ] ...
     - [ ] (dependency) libbase64++.h
     - [ ] (dependency) mempool.h
