@@ -156,9 +156,37 @@ public:
         void set_name_(const json_string & newname) json_nothrow json_write_priority;
 #   endif
 
+    /**
+     * @brief Calculates the number of elements in the node.
+     *
+     * For a string, this is the number of characters, for arrays and objects this is the number of
+     * other JSON nodes held by this one. For all other node types this value is undefined.
+     *
+     * @return The number of characters or JSON nodes in this node's value.
+     */
     json_index_t size(void) const json_nothrow json_read_priority;
+
+    /**
+     * @brief Checks for any characters or sub-nodes.
+     *
+     * @return True if this node has a size greater than zero.
+     */
     bool empty(void) const json_nothrow json_read_priority;
+
+    /**
+     * @brief Removes all characters or sub-nodes from this node.
+     *
+     * For strings, this removes all the characters in the string. For arrays and objects this
+     * removes all `JSONNode` contained by this one. For all other node types this results in
+     * undefined behaviour.
+     */
     void clear(void) json_nothrow json_cold;
+
+    /**
+     * @brief Fetches the type of this `JSONNode`.
+     *
+     * @return The type of this node.
+     */
     unsigned char type(void) const json_nothrow json_read_priority;
 
     json_string name(void) const json_nothrow json_read_priority;
