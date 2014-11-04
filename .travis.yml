@@ -1,0 +1,6 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+
+script: cd _internal/TestSuite; make && ./testapp
