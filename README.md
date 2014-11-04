@@ -1,4 +1,4 @@
-libjson
+libjson [![build status](https://travis-ci.org/NatalieWolfe/libjson.svg)](https://travis-ci.org/NatalieWolfe/libjson/builds#)
 =======
 
 A fork of http://sourceforge.net/projects/libjson/ aiming to clean up the library and bring C++11
