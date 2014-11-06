@@ -31,25 +31,27 @@ Roadmap
 4. [ ] Convert build to gyp
 5. [ ] Convert tests to Google Test
 6. [ ] Move everything inside the namespace "json"
-7. [ ] Add error classes.
+7. [ ] Remove `json_nothrow`.
+8. [ ] Add error classes.
     - [ ] json::conversion_error (std::logic_error)
     - [ ] json::out_of_bounds_error (std::out_of_range)
-8. [ ] Update classes with error checks:
+9. [ ] Update classes with error checks:
     - [ ] JSONNode
     - [ ] internalJSONNode
     - [ ] ...
-9. [ ] Add move constructors to classes:
+10. [ ] Add move constructors to classes:
     - [ ] JSONNode
     - [ ] internalJSONNode
     - [ ] ...
-10. [ ] Add initialization_vector support to classes:
+11. [ ] Add initialization_vector support to classes:
     - [ ] JSONNode
-11. [ ] Update callbacks to use `std::function`
+12. [ ] Update callbacks to use `std::function`
     - [ ] Debug callbacks
     - [ ] Stream callbacks
     - [ ] Mutex callbacks
     - [ ] Memory callbacks
-12. [ ] Make mutexes compatible with `std::mutex`
+13. [ ] Make mutexes compatible with `std::mutex`
+
 
 Cleaning Checklist
 ------------------
@@ -62,3 +64,4 @@ Cleaning Checklist
 - Wrap all lines at 100 characters.
 - Add doxygen-style documentation to all classes, functions, and member variables.
 - Remove deprecated functionality.
+- Move `inline` member function definitions into class declaration.
