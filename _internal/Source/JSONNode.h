@@ -189,17 +189,52 @@ public:
      */
     unsigned char type(void) const json_nothrow json_read_priority;
 
+    /**
+     * @brief Fetches the name of this node.
+     *
+     * @return The name of the node, which may be empty.
+     */
     json_string name(void) const json_nothrow json_read_priority;
-    void set_name(const json_string & newname) json_nothrow json_write_priority;
-    #ifdef JSON_COMMENTS
-       void set_comment(const json_string & comment) json_nothrow;
-       json_string get_comment(void) const json_nothrow;
-    #endif
-    #if !defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY)
-       void preparse(void) json_nothrow json_read_priority;
-    #endif
 
+    /**
+     * @brief Sets a name for the node. This is the key used to identify it in a map.
+     *
+     * @param newname The new name for the node.
+     */
+    void set_name(const json_string& newname) json_nothrow json_write_priority;
 
+#   ifdef JSON_COMMENTS
+        /**
+         * @brief Sets the comment that appears right before this node.
+         *
+         * @param comment The new comment for the node.
+         */
+        void set_comment(const json_string& comment) json_nothrow;
+
+        /**
+         * @brief Fetches the comment that appeared just before this node in the JSON.
+         *
+         * @return The comment for this node.
+         */
+        json_string get_comment(void) const json_nothrow;
+#   endif
+
+#   if !defined(JSON_PREPARSE) && defined(JSON_READ_PRIORITY)
+        /**
+         * @brief Causes the value of the node to be full parsed up-front.
+         *
+         * Normally node values are lazy-parsed, so cycles aren't wasted parsing unused elements.
+         */
+        void preparse(void) json_nothrow json_read_priority;
+#   endif
+
+    /**
+     * @brief Gets the value of the node as a string.
+     *
+     * This behavior is undefined for arrays, booleans, and objects.
+     *
+     * @return This node's value, as a string.
+     */
     json_string as_string(void) const json_nothrow json_read_priority;
     json_int_t as_int(void) const json_nothrow json_read_priority;
     json_number as_float(void) const json_nothrow json_read_priority;
