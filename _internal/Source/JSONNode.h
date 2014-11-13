@@ -231,26 +231,96 @@ public:
     /**
      * @brief Gets the value of the node as a string.
      *
-     * This behavior is undefined for arrays, booleans, and objects.
+     * This behavior is undefined for arrays and objects. Booleans will be `"true"` or `"false"`. A
+     * lexical cast will be attempted for numbers.
      *
      * @return This node's value, as a string.
      */
     json_string as_string(void) const json_nothrow json_read_priority;
+
+    /**
+     * @brief Gets the value of the node as an integer.
+     *
+     * This behavior is undefined for arrays and objects. Booleans will be 1 if true, 0 if false. A
+     * lexical cast will be attempted on strings, resulting in 0 if it fails.
+     *
+     * @return This node's value, as an integer.
+     */
     json_int_t as_int(void) const json_nothrow json_read_priority;
+
+    /**
+     * @brief Gets the value of the node as a float.
+     *
+     * This behavior is undefined for arrays and objects. Booleans will be 1 if true, 0 if false. A
+     * lexical cast will be attempted on strings, resulting in 0 if it fails.
+     *
+     * @return This node's value, as a float.
+     */
     json_number as_float(void) const json_nothrow json_read_priority;
+
+    /**
+     * @brief Gets the value of the node as a boolean.
+     *
+     * This behavior is undefined for strings, arrays, and objects. Null will be `false`. Numbers
+     * are `true` if not equal to zero.
+     *
+     * @return This node's value, as a boolean.
+     */
     bool as_bool(void) const json_nothrow json_read_priority;
 
-    #ifdef JSON_CASTABLE
-       JSONNode as_node(void) const json_nothrow json_read_priority;
-       JSONNode as_array(void) const json_nothrow json_read_priority;
-       void cast(char newtype) json_nothrow;
-    #endif
+#   ifdef JSON_CASTABLE
+        /**
+         * @brief Gets the value of the node as a JSON object.
+         *
+         * This behavior is undefined for NULL, string, number, and bool values. For objects, a copy
+         * is returned. For arrays a new object is constructed using the array.
+         *
+         * @return This node's value as an object.
+         */
+        JSONNode as_node(void) const json_nothrow json_read_priority;
 
-    #ifdef JSON_BINARY
-       std::string as_binary(void) const json_nothrow json_cold;
-       void set_binary(const unsigned char * bin, size_t bytes) json_nothrow json_cold;
-    #endif
+        /**
+         * @brief Gets the value of the node as an array.
+         *
+         * This behavior is undefined for NULL, string, number, and bool values. For arrays, a copy
+         * is returned. For objects, an array of the values is returned.
+         *
+         * @return This node's value as an array.
+         */
+        JSONNode as_array(void) const json_nothrow json_read_priority;
 
+        /**
+         * @brief Casts this node to another type.
+         *
+         * @param newtype The new type to change this node to.
+         */
+        void cast(char newtype) json_nothrow;
+#   endif
+
+#   ifdef JSON_BINARY
+        /**
+         * @brief Gets the Base64 decoded value of the field.
+         *
+         * This behavior is undefined for all node types except string.
+         *
+         * @return This node's value, Base64 decoded.
+         */
+        std::string as_binary(void) const json_nothrow json_cold;
+
+        /**
+         * @brief Sets the binary value of the node, which will be Base64 encoded when written.
+         *
+         * @param bin   The binary data to use.
+         * @param bytes The size of the binary, in bytes.
+         */
+        void set_binary(const unsigned char * bin, size_t bytes) json_nothrow json_cold;
+#   endif
+
+    /**
+     * @brief Gets the node at the given index.
+     *
+     * This behavior is undefined for non-array nodes.
+     */
     JSONNode & at(json_index_t pos) json_throws(std::out_of_range);
     const JSONNode & at(json_index_t pos) const json_throws(std::out_of_range);
 
