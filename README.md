@@ -51,6 +51,7 @@ Roadmap
     - [ ] Mutex callbacks
     - [ ] Memory callbacks
 13. [ ] Make mutexes compatible with `std::mutex`
+14. [ ] Update license.
 
 
 Cleaning Checklist
