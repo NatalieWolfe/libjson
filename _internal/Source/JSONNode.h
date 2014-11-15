@@ -320,20 +320,64 @@ public:
      * @brief Gets the node at the given index.
      *
      * This behavior is undefined for non-array nodes.
+     *
+     * @return A reference to the node at the given index.
      */
     JSONNode & at(json_index_t pos) json_throws(std::out_of_range);
+
+    /**
+     * @copydoc JSONNode::at(json_index_t)
+     */
     const JSONNode & at(json_index_t pos) const json_throws(std::out_of_range);
 
+    /**
+     * @copydoc JSONNode::at(json_index_t)
+     */
     JSONNode & operator[](json_index_t pos) json_nothrow;
+
+    /**
+     * @copydoc JSONNode::at(json_index_t)
+     */
     const JSONNode & operator[](json_index_t pos) const json_nothrow;
 
+    /**
+     * @brief Gets the node with the specified key.
+     *
+     * This behavior is undefined for non-object nodes.
+     *
+     * @return A reference to the node with the given key.
+     */
     JSONNode & at(const json_string & name_t) json_throws(std::out_of_range);
+
+    /**
+     * @copydoc JSONNode::at(const json_string&)
+     */
     const JSONNode & at(const json_string & name_t) const json_throws(std::out_of_range);
-    #ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
-       JSONNode & at_nocase(const json_string & name_t) json_throws(std::out_of_range);
-       const JSONNode & at_nocase(const json_string & name_t) const json_throws(std::out_of_range);
-    #endif
+
+#   ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
+        /**
+         * @brief Gets the node with a key matching the one given, ignoring case.
+         *
+         * This behavior is undefined for non-object nodes.
+         *
+         * @return A reference to the node with the given key.
+         */
+        JSONNode & at_nocase(const json_string & name_t) json_throws(std::out_of_range);
+
+        /**
+         * @copydoc JSONNode::at_nocase(const json_string&)
+         */
+        const JSONNode & at_nocase(const json_string & name_t) const json_throws(std::out_of_range);
+#   endif
+
+    /**
+     * @copydoc JSONNode::at(const json_string&)
+     */
     JSONNode & operator[](const json_string & name_t) json_nothrow;
+
+    /**
+     * @copydoc JSONNode::at(const json_string&)
+     */
     const JSONNode & operator[](const json_string & name_t) const json_nothrow;
 
     void push_back(const JSONNode & node) json_nothrow;
