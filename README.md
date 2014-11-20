@@ -25,7 +25,26 @@ Roadmap
     - [x] JSONOptions.h
     - [ ] JSONNode.h/.cpp
     - [ ] internalJSONNode.h/.cpp
-    - [ ] ...
+    - [ ] JSONAllocator.h/.cpp
+    - [ ] JSONChildren.h/.cpp
+    - [ ] JSONDebug.h/.cpp
+    - [ ] JSONDefs
+    - [ ] JSONDefs.h
+    - [ ] JSONGlobals.h
+    - [ ] JSONIterators.cpp
+    - [ ] JSONMemory.h/.cpp
+    - [ ] JSONMemoryPool.h
+    - [ ] JSONNode_Mutex.cpp
+    - [ ] JSONPreparse.h/.cpp
+    - [ ] JSONSharedString.h
+    - [ ] JSONSingleton.h
+    - [ ] JSONStats.h
+    - [ ] JSONStream.h/.cpp
+    - [ ] JSONValidator.h/.cpp
+    - [ ] JSONWorker.h/.cpp
+    - [ ] JSONWriter.cpp
+    - [ ] JSON_Base64.h
+    - [ ] NumberToString.h
     - [ ] (dependency) libbase64++.h
     - [ ] (dependency) mempool.h
 4. [ ] Convert build to gyp
@@ -33,16 +52,49 @@ Roadmap
 6. [ ] Move everything inside the namespace "json"
 7. [ ] Remove `json_nothrow`.
 8. [ ] Add error classes.
+    - [ ] json::parse_error
     - [ ] json::conversion_error (std::logic_error)
     - [ ] json::out_of_bounds_error (std::out_of_range)
 9. [ ] Update classes with error checks:
     - [ ] JSONNode
     - [ ] internalJSONNode
-    - [ ] ...
+    - [ ] JSONAllocator
+    - [ ] JSONChildren
+    - [ ] JSONDebug
+    - [ ] JSONIterators
+    - [ ] JSONMemory
+    - [ ] JSONMemoryPool
+    - [ ] JSONNode_Mutex
+    - [ ] JSONPreparse
+    - [ ] JSONSharedString
+    - [ ] JSONSingleton
+    - [ ] JSONStats.h
+    - [ ] JSONStream
+    - [ ] JSONValidator
+    - [ ] JSONWorker
+    - [ ] JSONWriter
+    - [ ] JSON_Base64
+    - [ ] NumberToString
 10. [ ] Add move constructors to classes:
     - [ ] JSONNode
     - [ ] internalJSONNode
-    - [ ] ...
+    - [ ] JSONAllocator
+    - [ ] JSONChildren
+    - [ ] JSONDebug
+    - [ ] JSONIterators
+    - [ ] JSONMemory
+    - [ ] JSONMemoryPool
+    - [ ] JSONNode_Mutex
+    - [ ] JSONPreparse
+    - [ ] JSONSharedString
+    - [ ] JSONSingleton
+    - [ ] JSONStats.h
+    - [ ] JSONStream
+    - [ ] JSONValidator
+    - [ ] JSONWorker
+    - [ ] JSONWriter
+    - [ ] JSON_Base64
+    - [ ] NumberToString
 11. [ ] Add initialization_vector support to classes:
     - [ ] JSONNode
 12. [ ] Update callbacks to use `std::function`
