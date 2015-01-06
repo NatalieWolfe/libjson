@@ -380,13 +380,51 @@ public:
      */
     const JSONNode & operator[](const json_string & name_t) const json_nothrow;
 
+    /**
+     * @brief Adds a new node the end of this array or object.
+     *
+     * @param node The new JSON node to add.
+     */
     void push_back(const JSONNode & node) json_nothrow;
+
+    /**
+     * @brief Ensures that there is enough space for `siz` number of nodes.
+     *
+     * If there is already room for `siz` elements, then this function does nothing. If there is not
+     * room already, more space will be allocated to ensure at least `siz` elements will fit.
+     *
+     * @param siz The number of elements this node needs to be able to fit.
+     */
     void reserve(json_index_t siz) json_nothrow;
+
+    /**
+     * @brief Removes the element at the given position and returns it.
+     *
+     * @param pos The index of the element to remove and return.
+     *
+     * @return The removed node.
+     */
     JSONNode pop_back(json_index_t pos) json_throws(std::out_of_range);
+
+    /**
+     * @brief Removes the element at the given position and returns it.
+     *
+     * @param name_t The name of the element to remove and return.
+     *
+     * @return The removed node.
+     */
     JSONNode pop_back(const json_string & name_t) json_throws(std::out_of_range);
-    #ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
-       JSONNode pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range);
-    #endif
+
+#   ifdef JSON_CASE_INSENSITIVE_FUNCTIONS
+        /**
+         * @brief Removes the element with the given name and returns it, ignoring the case.
+         *
+         * @param name_t The case-insensitive name of the element to remove and return.
+         *
+         * @return The removed node.
+         */
+        JSONNode pop_back_nocase(const json_string & name_t) json_throws(std::out_of_range);
+#   endif
 
     DECLARE_FOR_ALL_TYPES(JSONNode & operator =)
     JSONNode & operator = (const JSONNode &) json_nothrow;
